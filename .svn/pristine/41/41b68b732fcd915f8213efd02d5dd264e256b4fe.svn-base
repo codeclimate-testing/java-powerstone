@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!-- $Id: build.xml,v 1.12 2006/09/12 02:05:04 waynewang Exp $ -->
+<project name="ps_paging" basedir="." default="init">
+	<!-- ================================================================== -->
+	<!-- Properties -->
+	<!-- ================================================================== -->
+	<property environment="env" />
+	<property name="project.name" value="ps_paging" />
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="build" />
+	<property name="dist.dir" value="dist" />
+	<property name="web.dir" value="web" />
+	<property name="lib.dir" value="${web.dir}/WEB-INF/lib" />
+	<property name="test.src" value="test" />
+	<property name="test.dir" value="${build.dir}/test" />
+
+	<!-- Classpaths -->
+	<path id="compile.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="clean" description="Deletes generated files and folders">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${test.dir}" />
+	</target>
+
+	<target name="compile" depends="clean,init" description="Compile common module">
+		<mkdir dir="${build.dir}/classes" />
+		<native2ascii encoding="UTF-8" src="${src.dir}" dest="${build.dir}/classes" includes="*.properties" />
+		<!-- Copy tld files to ${build.dir}/META-INF -->
+		<copy todir="${build.dir}/classes/META-INF">
+			<fileset dir="${src.dir}" includes="*.tld" />
+		</copy>
+		<javac srcdir="${src.dir}" destdir="${build.dir}/classes" debug="${javac.debug}" optimize="${javac.optimize}" classpathref="compile.classpath" />
+
+		<!-- compile tests -->
+		<mkdir dir="${test.dir}/classes" />
+		<javac destdir="${test.dir}/classes" debug="true" optimize="false" deprecation="false" failonerror="true">
+			<src path="${test.src}" />
+			<classpath>
+				<path refid="compile.classpath" />
+				<path location="${build.dir}/classes" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="package" depends="compile" description="package">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/${project.name}.jar">
+			<fileset dir="${build.dir}/classes">
+				<exclude name="**/sample/*.*" />
+			</fileset>
+		</jar>
+		<copy todir="${lib.dir}">
+			<fileset dir="${dist.dir}" includes="${project.name}.jar" />
+		</copy>
+
+		<war destfile="${dist.dir}/${project.name}.war" webxml="${web.dir}/WEB-INF/web.xml" compress="true">
+			<lib dir="${lib.dir}">
+				<patternset refid="war.jars" />
+			</lib>
+			<classes dir="${build.dir}/classes">
+				<include name="**/sample/*.*" />
+			</classes>
+			<fileset dir="${web.dir}">
+				<exclude name="**/web.xml" />
+				<exclude name="**/*.jar" />
+			</fileset>
+		</war>
+	</target>
+
+	<patternset id="war.jars">
+		<include name="**/*.*" />
+		<exclude name="**/junit.jar" />
+		<exclude name="**/j2ee.jar" />
+	</patternset>
+
+	<target name="test" depends="compile" description="Runs JUnit tests">
+		<!-- Check that junit.jar is in $ANT_HOME/lib -->
+		<available classname="junit.framework.TestCase" property="junit.present" />
+		<echo message="${env.ANT_HOME}" />
+		<fail unless="junit.present" message="Please copy ${lib.dir}/junit.jar into ${env.ANT_HOME}/lib" />
+
+		<mkdir dir="${test.dir}/data" />
+		<junit printsummary="yes" fork="true" errorProperty="test.failed" failureProperty="test.failed">
+			<classpath>
+				<path refid="compile.classpath" />
+				<path location="${build.dir}/classes" />
+				<path location="${test.dir}/classes" />
+				<path location="${web.dir}" />
+			</classpath>
+			<formatter type="xml" />
+			<formatter type="brief" usefile="false" />
+			<batchtest todir="${test.dir}/data" if="testcase">
+				<fileset dir="${test.dir}/classes">
+					<include name="**/*${testcase}*" />
+					<exclude name="**/*TestCase.class" />
+				</fileset>
+			</batchtest>
+			<batchtest todir="${test.dir}/data" unless="testcase">
+				<fileset dir="${test.dir}/classes">
+					<include name="**/*Test.class*" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<fail if="test.failed">
+	          Unit tests failed. For error messages, check the log files in
+	          ${test.dir}/data or run "ant test-reports"
+	          to generate reports at ${test.dir}/reports.</fail>
+	</target>
+</project>

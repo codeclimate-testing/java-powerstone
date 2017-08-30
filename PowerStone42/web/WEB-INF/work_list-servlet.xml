@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+      <property name="exceptionMappings">
+        <props>
+        <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+        </prop>
+        </props>
+      </property>
+  </bean>
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+  	<property name="basename" value="messages"/>
+  </bean>
+  <!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+  	<property name="prefix"><value>/WEB-INF/views/work_list/</value></property>
+  	<property name="suffix"><value>.jsp</value></property>
+  </bean>
+
+  <!-- HandlerMapping that dispatches all request to the MultiActionController below -->
+  <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  	<property name="defaultHandler"><ref local="workListController"/></property>
+  </bean>
+
+  <!-- MultiActionController that defines user interface actions as separate methods -->
+  <bean id="workListController" class="org.powerstone.workflow.web.WorkListController">
+  	<property name="methodNameResolver"><ref local="workListControllerResolver"/></property>
+  	<property name="flowTaskManager"><ref bean="flowTaskManager"/></property>
+  	<property name="caDelegater"><ref bean="caDelegater"/></property>
+        <property name="flowMetaManager"><ref bean="flowMetaManager"/></property>
+        <property name="flowDeployManager"><ref bean="flowDeployManager"/></property>
+  </bean>
+
+  <!-- Method resolution strategy for the MultiActionController above -->
+  <bean id="workListControllerResolver"
+    class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+    <property name="mappings">
+    	<props>
+       	   <prop key="/main.wl">main</prop>
+    	   <prop key="/list_tasks_kinds.wl">listTasksKinds</prop>
+           <prop key="/tasks_pannel.wl">tasksPannel</prop>
+           <prop key="/list_new_tasks.wl">listNewTasks</prop>
+           <prop key="/check_out_tasks.wl">checkOutTasks</prop>
+           <prop key="/list_executing_tasks.wl">listExecutingTasks</prop>
+           <prop key="/show_executing_task.wl">showExecutingTask</prop>
+           <prop key="/list_tasks_to_assign.wl">listTasksToAssign</prop>
+           <prop key="/list_tasks_to_refuse.wl">listTasksToRefuse</prop>
+           <prop key="/refuse_task.wl">refuseTask</prop>
+           <prop key="/list_my_refused_tasks.wl">listMyRefusedTasks</prop>
+           <prop key="/abort_task.wl">abortTask</prop>
+           <prop key="/list_finished_tasks.wl">listFinishedTasks</prop>
+           <prop key="/search_to_distribute.wl">searchToDistribute</prop>
+           <prop key="/search_to_assign.wl">searchToAssign</prop>
+           <prop key="/generate_person_dict.wl">generatePersonDict</prop>
+           <prop key="/distribute_task.wl">distributeTask</prop>
+           <prop key="/assign_task.wl">assignTask</prop>
+           <prop key="/get_back_task.wl">getBackTask</prop>
+           <prop key="/login.wl">login</prop>
+    	</props>
+    </property>
+  </bean>
+</beans>

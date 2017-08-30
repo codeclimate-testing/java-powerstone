@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+        <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+           <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+                </prop>
+            </props>
+           </property>
+        </bean>
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages"/>
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/flow_driver/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+             <property name="mappings">
+                <props>
+                  <prop key="/wf/home.fd">flowDriverController</prop>
+                  <prop key="/wf/home_to_deploy.fd">flowDriverController</prop>
+                  <prop key="/wf/list_drivers.fd">flowDriverController</prop>
+                  <prop key="/wf/list_drivers_to_deploy.fd">flowDriverController</prop>
+                  <prop key="/wf/see_driver_detail.fd">flowDriverController</prop>
+                  <prop key="/wf/remove_driver.fd">flowDriverController</prop>
+                  <prop key="/wf/remove_driver_paramenume.fd">flowDriverController</prop>
+                  <prop key="/wf/remove_driver_inputparam.fd">flowDriverController</prop>
+                  <prop key="/wf/remove_driver_outputparam.fd">flowDriverController</prop>
+                  <prop key="/wf/edit_driver.fd">driverFormController</prop>
+                  <prop key="/wf/edit_input_param.fd">driverInputFormController</prop>
+                  <prop key="/wf/edit_output_param.fd">driverOutputFormController</prop>
+                  <prop key="/wf/edit_param_enume.fd">driverOutputEnumeFormController</prop>
+                </props>
+             </property>
+	</bean>
+
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="flowDriverController" class="org.powerstone.workflow.web.WorkflowDriverController">
+		<property name="methodNameResolver"><ref local="flowDriverControllerResolver"/></property>
+		<property name="workflowDriverManager"><ref bean="workflowDriverManager"/></property>
+	</bean>
+
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="flowDriverControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/wf/home.fd">homePage</prop>
+              <prop key="/wf/home_to_deploy.fd">homePageToDeploy</prop>
+              <prop key="/wf/list_drivers.fd">listDrivers</prop>
+              <prop key="/wf/list_drivers_to_deploy.fd">listDriversToDeploy</prop>
+              <prop key="/wf/see_driver_detail.fd">seeDriverDetail</prop>
+              <prop key="/wf/remove_driver.fd">removeDriver</prop>
+              <prop key="/wf/remove_driver_paramenume.fd">removeDriverParamEnume</prop>
+              <prop key="/wf/remove_driver_inputparam.fd">removeDriverInputParam</prop>
+              <prop key="/wf/remove_driver_outputparam.fd">removeDriverOutputParam</prop>
+            </props>
+	  </property>
+	</bean>
+    <bean id="driverFormController" class="org.powerstone.workflow.web.DriverFormController">
+                <property name="commandName"><value>driver</value></property>
+  		<property name="commandClass"><value>org.powerstone.workflow.model.WorkflowDriver</value></property>
+		<property name="formView" value="driverForm"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="workflowDriverManager"><ref bean="workflowDriverManager"/></property>
+	</bean>
+    <bean id="driverInputFormController" class="org.powerstone.workflow.web.DriverInputFormController">
+                <property name="commandName"><value>driverInput</value></property>
+  		<property name="commandClass"><value>org.powerstone.workflow.model.WFDriverInputParam</value></property>
+		<property name="formView" value="driverInputForm"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="workflowDriverManager"><ref bean="workflowDriverManager"/></property>
+	</bean>
+    <bean id="driverOutputFormController" class="org.powerstone.workflow.web.DriverOutputFormController">
+                <property name="commandName"><value>driverOutput</value></property>
+  		<property name="commandClass"><value>org.powerstone.workflow.model.WFDriverOutputParam</value></property>
+		<property name="formView" value="driverOutputForm"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="workflowDriverManager"><ref bean="workflowDriverManager"/></property>
+	</bean>
+    <bean id="driverOutputEnumeFormController" class="org.powerstone.workflow.web.DriverOutputEnumeFormController">
+                <property name="commandName"><value>driverOutputEnume</value></property>
+  		<property name="commandClass"><value>org.powerstone.workflow.model.WFDriverOutputParamEnume</value></property>
+		<property name="formView" value="driverOutputEnumeForm"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="workflowDriverManager"><ref bean="workflowDriverManager"/></property>
+	</bean>
+        <bean id="beanValidator" class="org.springmodules.commons.validator.DefaultBeanValidator">
+               <property name="validatorFactory" ref="validatorFactory"/>
+        </bean>
+</beans>

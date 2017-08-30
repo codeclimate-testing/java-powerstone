@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+    <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+    <bean id="propertyConfigure" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name="locations">
+          <list>
+             <value>WEB-INF/classes/ps_database.properties</value>
+          </list>
+       </property>
+    </bean>
+
+    <bean id="ps_dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName">
+          <value>${hibernate.connection.driver_class}</value>
+        </property>
+        <property name="url">
+          <value>${hibernate.connection.url}</value>
+        </property>
+        <property name="username"><value>${hibernate.connection.username}</value></property>
+        <property name="password"><value>${hibernate.connection.password}</value></property>
+    </bean>
+
+    <!-- Hibernate SessionFactory -->
+    <bean id="ps_sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource"><ref local="ps_dataSource"/></property>
+        <property name="mappingResources">
+            <list>
+              <value>org/powerstone/workflow/model/BusinessType.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowDeploy.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowMetaFile.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowNodeBinding.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowNodeInputParamBinding.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowNodeOutputParamBinding.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowNodeOutputParamEnumeBinding.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowUserPerformer.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowRolePerformer.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowProc.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowProcRelativeData.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowProcTransaction.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowProcTransition.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowTask.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowTaskUser.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowTaskRole.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowTaskAssigner.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowTaskRefuse.hbm.xml</value>
+              <value>org/powerstone/workflow/model/WFDriverInputParam.hbm.xml</value>
+              <value>org/powerstone/workflow/model/WFDriverOutputParam.hbm.xml</value>
+              <value>org/powerstone/workflow/model/WFDriverOutputParamEnume.hbm.xml</value>
+              <value>org/powerstone/workflow/model/WorkflowDriver.hbm.xml</value>
+              <value>org/powerstone/workflow/model/WorkflowMeta.hbm.xml</value>
+              <value>org/powerstone/workflow/model/FlowMetaFileStore.hbm.xml</value>
+              <value>org/powerstone/workflow/model/NewTask.hbm.xml</value>
+              <value>org/powerstone/ca/model/Group.hbm.xml</value>
+              <value>org/powerstone/ca/model/GroupRight.hbm.xml</value>
+              <value>org/powerstone/ca/model/Resource.hbm.xml</value>
+              <value>org/powerstone/ca/model/Role.hbm.xml</value>
+              <value>org/powerstone/ca/model/RoleRight.hbm.xml</value>
+              <value>org/powerstone/ca/model/User.hbm.xml</value>
+              <value>org/powerstone/ca/model/UserRight.hbm.xml</value>
+              <value>org/powerstone/ca/model/UserToken.hbm.xml</value>
+              <value>org/powerstone/ca/model/WebModule.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+        <props>
+            <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+            <!--prop key="hibernate.hbm2ddl.auto">create</prop-->
+            <prop key="hibernate.jdbc.fetch_size">50</prop>
+            <prop key="hibernate.jdbc.batch_size">20</prop>
+            <prop key="hibernate.jdbc.use_scrollable_resultset">false</prop>
+            <prop key="hibernate.use_outer_join">true</prop>
+            <prop key="hibernate.show_sql">false</prop>
+            <prop key="hibernate.cache.use_query_cache">true</prop>
+            <prop key="hibernate.connection.pool_size">20</prop>
+            <prop key="hibernate.cache.provider_class">org.hibernate.cache.OSCacheProvider</prop>
+        </props>
+        </property>
+    </bean>
+
+    <!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+    <bean id="ps_transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory"><ref local="ps_sessionFactory"/></property>
+    </bean>
+
+    <bean id="baseTransactionProxy" abstract="true"
+      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+	<property name="transactionManager">
+          <ref bean="ps_transactionManager"/>
+        </property>
+	<property name="transactionAttributes">
+		<props>
+			<prop key="*">PROPAGATION_REQUIRED</prop>
+		</props>
+	</property>
+    </bean>
+</beans>

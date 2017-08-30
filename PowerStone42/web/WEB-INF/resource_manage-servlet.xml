@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+        <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+           <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+                </prop>
+            </props>
+           </property>
+        </bean>
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages"/>
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/resource_manage/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+             <property name="mappings">
+                <props>
+                  <prop key="/resource_manage/success_submit.resource">resourceManageController</prop>
+                  <prop key="/resource_manage/list_web_modules.resource">resourceManageController</prop>
+                  <prop key="/resource_manage/list_web_modules_tree.resource">resourceManageController</prop>
+                  <prop key="/resource_manage/list_web_module_resources.resource">resourceManageController</prop>
+                  <prop key="/resource_manage/remove_web_module.resource">resourceManageController</prop>
+                  <prop key="/resource_manage/remove_resource.resource">resourceManageController</prop>
+                  <prop key="/resource_manage/edit_web_module.resource">webModuleFormController</prop>
+                  <prop key="/resource_manage/edit_resource.resource">resourceFormController</prop>
+                </props>
+             </property>
+	</bean>
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="resourceManageController" class="org.powerstone.ca.web.ResourceManageController">
+		<property name="methodNameResolver"><ref local="resourceManageControllerResolver"/></property>
+                <property name="resourceManager"><ref bean="resourceManager"/></property>
+	</bean>
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="resourceManageControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/resource_manage/success_submit.resource">successSubmit</prop>
+              <prop key="/resource_manage/list_web_modules.resource">listWebModules</prop>
+              <prop key="/resource_manage/list_web_modules_tree.resource">listWebModulesTree</prop>
+              <prop key="/resource_manage/list_web_module_resources.resource">listWebModuleResources</prop>
+              <prop key="/resource_manage/remove_web_module.resource">removeWebModule</prop>
+              <prop key="/resource_manage/remove_resource.resource">removeResource</prop>
+            </props>
+	  </property>
+	</bean>
+	<bean id="resourceFormController" class="org.powerstone.ca.web.ResourceFormController">
+                <property name="commandName"><value>resource</value></property>
+  		<property name="commandClass"><value>org.powerstone.ca.model.Resource</value></property>
+		<property name="formView" value="resourceForm"/>
+		<property name="successView" value="redirect:/resource_manage/list_web_module_resources.resource"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="resourceManager"><ref bean="resourceManager"/></property>
+	</bean>
+        <bean id="webModuleFormController" class="org.powerstone.ca.web.WebModuleFormController">
+                <property name="commandName"><value>webModule</value></property>
+  		<property name="commandClass"><value>org.powerstone.ca.model.WebModule</value></property>
+		<property name="formView" value="webModuleForm"/>
+		<property name="successView" value="redirect:/resource_manage/success_submit.resource"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="resourceManager"><ref bean="resourceManager"/></property>
+	</bean>
+        <bean id="beanValidator" class="org.springmodules.commons.validator.DefaultBeanValidator">
+               <property name="validatorFactory" ref="validatorFactory"/>
+        </bean>
+</beans>

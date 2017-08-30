@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+        <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+           <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+                </prop>
+            </props>
+           </property>
+        </bean>
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages"/>
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/jsps/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+             <property name="mappings">
+                <props>
+                  <prop key="/dreambike/edit_order.do">orderFormController</prop>
+                  <prop key="/dreambike/edit_price.do">priceFormController</prop>
+                  <prop key="/dreambike/edit_tech.do">techFormController</prop>
+                  <prop key="/dreambike/edit_stock.do">stockFormController</prop>
+                  <prop key="/dreambike/edit_plan_purch.do">planPurchFormController</prop>
+                  <prop key="/dreambike/edit_plan_produce.do">planProduceFormController</prop>
+                  <prop key="/dreambike/edit_email_refuse.do">emailRefuseFormController</prop>
+                  <prop key="/dreambike/edit_email_receive_note.do">emailReceiveNoteFormController</prop>
+                  <prop key="/dreambike/edit_order_confirm.do">orderConfirmFormController</prop>
+                  <prop key="/login.do">dreambikeController</prop>
+                </props>
+             </property>
+	</bean>
+
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="dreambikeController" class="ps_dreambike.springmvc.DreambikeController">
+		<property name="methodNameResolver"><ref local="dreambikeControllerResolver"/></property>
+                <property name="caDelegater"><ref bean="caDelegater"/></property>
+	</bean>
+
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="dreambikeControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/login.do">login</prop>
+            </props>
+	  </property>
+	</bean>
+
+	<bean id="orderFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.OrderFormController">
+                <property name="commandName"><value>order</value></property>
+  		<property name="commandClass"><value>ps_dreambike.BikeOrder</value></property>
+		<property name="formView" value="orderForm"/>
+		<property name="successView" value="redirect:/successSubmit.jsp"/>
+		<property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+	<bean id="priceFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.PriceFormController">
+                <property name="commandName"><value>order</value></property>
+  		<property name="commandClass"><value>ps_dreambike.BikeOrder</value></property>
+		<property name="formView" value="priceForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+        <bean id="techFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.TechFormController">
+                <property name="commandName"><value>order</value></property>
+  		<property name="commandClass"><value>ps_dreambike.BikeOrder</value></property>
+		<property name="formView" value="techForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+        <bean id="stockFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.StockFormController">
+                <property name="commandName"><value>order</value></property>
+  		<property name="commandClass"><value>ps_dreambike.BikeOrder</value></property>
+		<property name="formView" value="stockForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+        <bean id="planPurchFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.PlanPurchFormController">
+                <property name="commandName"><value>purchase</value></property>
+  		<property name="commandClass"><value>ps_dreambike.Purchase</value></property>
+		<property name="formView" value="planPurchForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+        <bean id="planProduceFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.PlanProduceFormController">
+                <property name="commandName"><value>produce</value></property>
+  		<property name="commandClass"><value>ps_dreambike.Produce</value></property>
+		<property name="formView" value="planProduceForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+        <bean id="emailRefuseFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.EmailRefuseFormController">
+                <property name="commandName"><value>order</value></property>
+  		<property name="commandClass"><value>ps_dreambike.BikeOrder</value></property>
+		<property name="formView" value="emailRefuseForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+        <bean id="emailReceiveNoteFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.EmailReceiveNoteFormController">
+                <property name="commandName"><value>order</value></property>
+  		<property name="commandClass"><value>ps_dreambike.BikeOrder</value></property>
+		<property name="formView" value="emailReceiveNoteForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+        <bean id="orderConfirmFormController" parent="absWorkflowDriver" class="ps_dreambike.springmvc.OrderConfirmFormController">
+                <property name="commandName"><value>order</value></property>
+  		<property name="commandClass"><value>ps_dreambike.BikeOrder</value></property>
+		<property name="formView" value="orderConfirmForm"/>
+                <property name="dreambikeManager"><ref bean="dreambikeManager"/></property>
+	</bean>
+</beans>

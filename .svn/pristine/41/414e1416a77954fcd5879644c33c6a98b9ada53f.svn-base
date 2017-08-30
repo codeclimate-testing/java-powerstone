@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+        <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+           <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+                </prop>
+            </props>
+           </property>
+        </bean>
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+          <property name="basename" value="messages"/>
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+          <property name="prefix"><value>/WEB-INF/views/priv_manage/</value></property>
+          <property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+        <!-- HandlerMapping that dispatches all request to the MultiActionController below -->
+        <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  	   <property name="defaultHandler"><ref local="privilegeManageController"/></property>
+        </bean>
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="privilegeManageController" class="org.powerstone.ca.web.PrivilegeManageController">
+          <property name="methodNameResolver">
+            <ref local="privilegeManageControllerResolver"/>
+          </property>
+          <property name="resourceManager"><ref bean="resourceManager"/></property>
+          <property name="roleManager"><ref bean="roleManager"/></property>
+          <property name="userManager"><ref bean="userManager"/></property>
+          <property name="acegiCacheManager"><ref bean="acegiCacheManager"/></property>
+          <property name="authenticationUtil"><ref bean="authenticationUtil"/></property>
+	</bean>
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="privilegeManageControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/priv_manage/list_roles.priv">listRoles</prop>
+              <prop key="/priv_manage/show_role_privileges.priv">showRolePrivileges</prop>
+              <prop key="/priv_manage/update_role_privileges.priv">updateRolePrivileges</prop>
+              <prop key="/priv_manage/show_user_privileges.priv">showUserPrivileges</prop>
+              <prop key="/priv_manage/update_user_privileges.priv">updateUserPrivileges</prop>
+              <prop key="/priv_manage/refresh.priv">refresh</prop>
+            </props>
+	  </property>
+	</bean>
+</beans>

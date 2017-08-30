@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename"><value>messages</value></property>
+    </bean>
+    
+    <bean id="exceptionResolver" 
+        class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">        
+                    dataAccessFailure
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="userController" class="org.appfuse.web.UserController">
+        <property name="userManager"><ref bean="userManager"/></property>
+    </bean>
+    
+    <bean id="userPagingController" class="org.appfuse.web.UserPagingController">
+        <property name="userManager"><ref bean="userManager"/></property>
+        <property name="defaultPageSize"><value>5</value></property>        
+    </bean>
+
+    <bean id="userFormController" class="org.appfuse.web.UserFormController">
+        <property name="commandName"><value>user</value></property>
+        <property name="commandClass"><value>org.appfuse.model.User</value></property>
+        <property name="validator"><ref bean="beanValidator"/></property>
+        <property name="formView"><value>userForm</value></property>
+        <property name="successView"><value>redirect:userPage.html</value></property>
+        <property name="userManager"><ref bean="userManager"/></property>
+    </bean>
+
+    <!-- View Resolver for JSPs -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
+        <property name="prefix"><value>/</value></property>
+        <property name="suffix"><value>.jsp</value></property>
+    </bean>
+    
+    <bean id="urlMapping" 
+        class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/editUser.html">userFormController</prop>
+                <prop key="/users.html">userController</prop>
+                <prop key="/userPage.html">userPagingController</prop>
+            </props>
+        </property>
+    </bean>    
+
+    <bean id="beanValidator" class="org.springframework.validation.commons.BeanValidator">
+        <property name="validatorFactory"><ref bean="validatorFactory"/></property>
+    </bean>
+</beans>

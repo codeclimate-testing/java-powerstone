@@ -1,0 +1,15 @@
+td {  font-size: 12px; line-height: 18px}
+.txt {  font-size: 12px; background-color: #FFFFFF; border: #000000; border-style: solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px}
+A {  font-size: 12px; color: #336699; text-decoration: none}
+A:hover {  font-size: 12px; color: #333333}
+.td_bg1 {  background-color: #E2EDFE; font-size: 12px; color: #000000}
+.drop {	FONT-SIZE: 9pt; FILTER: DropShadow(OffX=1, OffY=1, color:#000000); COLOR: #ffffff; LINE-HEIGHT: 15pt}
+.sbttn {
+	BORDER-RIGHT: #104a7b 1px solid; BORDER-TOP: #afc4d5 1px solid; FONT-SIZE: 9pt; BACKGROUND: #F1F2FA; BORDER-LEFT: #afc4d5 1px solid; CURSOR: hand; COLOR: #383872; BORDER-BOTTOM: #104a7b 1px solid; HEIGHT: 19px; TEXT-DECORATION: none
+; font-family: "Arial", "Helvetica", "sans-serif"
+}
+.td_bg2 { background-color: #F4F9FF; font-size: 12px; color: #000000 }
+.f1 {  font-size: 12px; color: #FFFFFF}
+TEXTAREA {
+BORDER-RIGHT: #C1E7FF 1px solid; BORDER-TOP: #C1E7FF 1px solid; FONT-SIZE: 9pt; BORDER-LEFT: #C1E7FF 1px solid; COLOR: #000000; BORDER-BOTTOM: #C1E7FF 1px solid; BACKGROUND-COLOR: #F0FAFF
+}

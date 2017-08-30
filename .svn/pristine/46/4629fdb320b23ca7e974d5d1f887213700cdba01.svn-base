@@ -1,0 +1,20 @@
+    由于PowerStone项目是以开源项目Equinox（https://equinox.dev.java.net/）为基础开发的，所以，如果了解Equinox或AppFuse会对掌握PowerStone很有帮助。通过下列步骤就可以立刻开始体验PowerStone了。
+
+建立环境：
+1.安装 J2SE 1.4.2+，设置JAVA_HOME 环境变量指向其安装路径。
+2.安装Ant 1.6.2+（就是解压到一个目录），设置ANT_HOME 环境变量指向其安装路径，为了用Ant跑单元测试，Copy WEB-INF\lib/junit.jar to $ANT_HOME/lib。
+3.安装Tomcat 5.0.12，设置CATALINA_HOME环境变量指向Tomcat安装路径。这里选择Tomcat只是因为通过ANT任务可以很方便的把应用部署到Tomcat。还在JBoss4.0和Weblogic8.1上测试过。
+4.给环环境变量Path的值添加内容;%JAVA_HOME%/bin;%ANT_HOME%/bin;%CATALINA_HOME%/bin
+5.安装一个数据库。Hibernate支持多种数据库，但是我们只在MySQL、MSSQLServer（jTDS驱动）和Oracle上测试过。
+
+
+测试与部署：
+1.从http://sourceforge.net/projects/powerstone下载PowerStone最新版本，解压到某个目录，下文用$PS_HOME表示。
+2.为PowerStone新建数据库workflow。
+3.编辑$PS_HOME/web/WEB-INF/classes下的ps_database.properties，修改配置令其符合你的数据库环境；MySQL4.1和MSSQLServer的驱动程序已经存在于$PS_HOME/web/WEB-INF/lib中，如果用其它种类数据库，拷贝其驱动到$PS_HOME/web/WEB-INF/lib。
+4.编辑$PS_HOME下的build.properties，修改Tomcat参数和JDK版本已符合实际环境
+5.打开命令行工具，进入$PS_HOME，运行命令ant test，如果不出意外测试会全部通过，此时数据库中所有表已建好。
+6.运行命令ant deploy
+7.启动Tomcat。
+8.Tomcat启动完成以后，运行命令ant test -Dtestcase=InitDreamBikeDriver为系统初始化。
+9.访问http://localhost:8080/ps_console，用户名密码均为admin。

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+
+<beans>
+    <bean id="validatorFactory" class="org.springmodules.commons.validator.DefaultValidatorFactory">
+        <property name="validationConfigLocations">
+            <list>
+                <value>/WEB-INF/validation.xml</value>
+                <value>/WEB-INF/validator-rules.xml</value>
+            </list>
+        </property>
+    </bean>
+</beans>

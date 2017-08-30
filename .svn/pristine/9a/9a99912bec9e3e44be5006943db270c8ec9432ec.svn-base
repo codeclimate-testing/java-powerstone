@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.powerstone.ca.model.User"
+        table="CA_USER"
+    >
+
+        <id
+            name="id"
+            column="PK_ID"
+            type="java.lang.Long"
+            unsaved-value="-1"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-User.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="userName"
+            type="string"
+            column="VC_USER_NAME"
+            length="255"
+            not-null="true"
+            unique="true"
+        />
+
+        <property
+            name="password"
+            type="string"
+            column="VC_PASSWORD"
+            length="255"
+            not-null="true"
+        />
+
+        <property
+            name="realName"
+            type="string"
+            column="VC_REAL_NAME"
+            length="255"
+            not-null="true"
+        />
+
+        <property
+            name="sex"
+            type="string"
+            column="VC_SEX"
+            length="50"
+        />
+
+        <property
+            name="email"
+            type="string"
+            column="VC_EMAIL"
+            length="255"
+            not-null="true"
+            unique="true"
+        />
+
+        <property
+            name="memo"
+            type="string"
+            column="VC_MEMO"
+            length="255"
+        />
+
+        <property
+            name="state"
+            type="string"
+            column="VC_STATE"
+            length="50"
+            not-null="true"
+        />
+
+        <bag
+            name="groups"
+            table="CA_JOIN_USER_GROUP"
+            lazy="true"
+            cascade="save-update"
+        >
+
+              <key
+                  column="FK_USER_ID"
+              >
+              </key>
+
+              <many-to-many
+                  class="org.powerstone.ca.model.Group"
+                  column="FK_GROUP_ID"
+                  outer-join="auto"
+               />
+
+        </bag>
+
+        <bag
+            name="roles"
+            table="CA_JOIN_USER_ROLE"
+            lazy="true"
+            cascade="save-update"
+        >
+
+              <key
+                  column="FK_USER_ID"
+              >
+              </key>
+
+              <many-to-many
+                  class="org.powerstone.ca.model.Role"
+                  column="FK_ROLE_ID"
+                  outer-join="auto"
+               />
+
+        </bag>
+
+        <bag
+            name="rights"
+            lazy="true"
+            cascade="all-delete-orphan"
+        >
+
+              <key
+                  column="FK_USER_ID"
+              >
+              </key>
+
+              <one-to-many
+                  class="org.powerstone.ca.model.UserRight"
+              />
+
+        </bag>
+
+        <bag
+            name="webModules"
+            table="CA_JOIN_USER_WEBMODULE"
+            lazy="true"
+            cascade="all"
+        >
+
+              <key
+                  column="FK_USER_ID"
+              >
+              </key>
+
+              <many-to-many
+                  class="org.powerstone.ca.model.WebModule"
+                  column="FK_WEB_MODULE_ID"
+                  outer-join="auto"
+               />
+
+        </bag>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-User.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+        <query name="AllUsers"><![CDATA[
+            select u from User as u order by u.id
+        ]]></query>
+        <query name="UsersByState"><![CDATA[
+            select u from User as u where u.state = ?
+        ]]></query>
+        <query name="UsersHaveNoGroup"><![CDATA[
+            select u from User as u where u.id not in(select g.users.id from Group g)
+        ]]></query>
+        <query name="ByUserName"><![CDATA[
+            select u from User as u where u.userName = ?
+        ]]></query>
+        <query name="ByEmail"><![CDATA[
+            select u from User as u where u.email = ?
+        ]]></query>
+        <query name="UsersOfResource"><![CDATA[
+            select u from User as u left join u.rights as ur where ur.resource.id = ?
+        ]]></query>
+        <query name="UserRightsByCombineKeys"><![CDATA[
+            select ur from UserRight as ur where ur.user.id = ? and ur.resource.id = ? and ur.privilege = ?
+        ]]></query>
+
+</hibernate-mapping>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+  	<property name="prefix"><value>/WEB-INF/views/flow_performer/</value></property>
+  	<property name="suffix"><value>.jsp</value></property>
+  </bean>
+
+  <!-- HandlerMapping that dispatches all request to the MultiActionController below -->
+  <bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  	<property name="defaultHandler"><ref local="flowPerformerController"/></property>
+  </bean>
+
+  <!-- MultiActionController that defines user interface actions as separate methods -->
+  <bean id="flowPerformerController" class="org.powerstone.workflow.web.FlowPerformerController">
+  	<property name="methodNameResolver"><ref local="flowPerformerControllerResolver"/></property>
+  	<property name="flowDeployManager"><ref bean="flowDeployManager"/></property>
+  	<property name="caDelegater"><ref bean="caDelegater"/></property>
+        <property name="flowMetaManager"><ref bean="flowMetaManager"/></property>
+  </bean>
+
+  <!-- Method resolution strategy for the MultiActionController above -->
+  <bean id="flowPerformerControllerResolver"
+    class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+    <property name="mappings">
+    	<props>
+       	   <prop key="/wf/see_node_performer.pfm">seeNodePerformer</prop>
+    	   <prop key="/wf/remove_user_performer.pfm">removeUserPerformer</prop>
+           <prop key="/wf/remove_role_performer.pfm">removeRolePerformer</prop>
+           <prop key="/wf/user_organize.pfm">userOrganize</prop>
+           <prop key="/wf/list_user_organize.pfm">listUserOrganize</prop>
+           <prop key="/wf/add_user_performer.pfm">addUserPerformer</prop>
+           <prop key="/wf/list_members_to_add_performer.pfm">listMembersToAddPerformer</prop>
+           <prop key="/wf/list_roles.pfm">listRoles</prop>
+           <prop key="/wf/add_role_performer.pfm">addRolePerformer</prop>
+           <prop key="/wf/update_performer_logic.pfm">updatePerformerLogic</prop>
+    	</props>
+    </property>
+  </bean>
+</beans>

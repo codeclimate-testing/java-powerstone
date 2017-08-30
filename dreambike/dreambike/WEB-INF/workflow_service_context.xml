@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+    <!-- DAO -->
+    <bean id="flowMetaFileDAO" class="org.powerstone.workflow.dao.hibernate.FlowMetaFileDAOImpl">
+        <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="defaultLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+			lazy-init="true"/>
+    <bean id="oracleLobHandler" class="org.springframework.jdbc.support.lob.OracleLobHandler"
+      lazy-init="true"/>
+    <bean id="flowMetaFileStoreDAO" class="org.powerstone.workflow.dao.jdbc.FlowMetaFileDAOJDBC">
+	<property name="dataSource"><ref bean="ps_dataSource"/></property>
+	<property name="lobHandler"><ref bean="${hibernate.jdbc.lobhandler}"/></property>
+    </bean>
+    <bean id="businessTypeDAO" class="org.powerstone.workflow.dao.hibernate.BusinessTypeDAOImpl">
+        <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="workflowMetaDAO" class="org.powerstone.workflow.dao.hibernate.WorkflowMetaDAOImpl">
+        <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="workflowDriverDAO" class="org.powerstone.workflow.dao.hibernate.WorkflowDriverDAOImpl">
+        <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="flowDeployDAO" class="org.powerstone.workflow.dao.hibernate.FlowDeployDAOImpl">
+        <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+
+    <!-- Service -->
+    <bean id="flowMetaManager" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.workflow.service.impl.FlowMetaManagerImpl">
+            <property name="flowMetaDAO"><ref local="workflowMetaDAO"/></property>
+            <property name="flowMetaFileDAO"><ref local="flowMetaFileDAO"/></property>
+            <property name="flowMetaFileStoreDAO"><ref local="flowMetaFileStoreDAO"/></property>
+            <property name="businessTypeDAO"><ref local="businessTypeDAO"/></property>
+         </bean>
+        </property>
+    </bean>
+
+    <bean id="businessTypeManager" parent="baseTransactionProxy">
+        <property name="target">
+           <bean class="org.powerstone.workflow.service.impl.BusinessTypeManagerImpl">
+             <property name="businessTypeDAO"><ref local="businessTypeDAO"/></property>
+           </bean>
+        </property>
+    </bean>
+
+    <bean id="workflowDriverManager" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.workflow.service.impl.WorkflowDriverManagerImpl">
+             <property name="workflowDriverDAO"><ref local="workflowDriverDAO"/></property>
+          </bean>
+        </property>
+    </bean>
+
+    <bean id="flowDeployManager" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.workflow.service.impl.FlowDeployManagerImpl">
+            <property name="flowDeployDAO"><ref local="flowDeployDAO"/></property>
+            <property name="workflowDriverManager"><ref local="workflowDriverManager"/></property>
+            <property name="caDelegater"><ref bean="caDelegater"/></property>
+          </bean>
+        </property>
+    </bean>
+</beans>

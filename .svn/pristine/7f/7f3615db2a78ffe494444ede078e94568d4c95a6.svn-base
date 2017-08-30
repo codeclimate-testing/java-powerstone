@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN"
+    "http://jakarta.apache.org/commons/dtds/validator_1_1_3.dtd">
+
+<form-validation>
+    <formset>
+        <form name="group">
+            <field property="groupName" depends="required,maxlength">
+                <arg0 key="ca.group.name" resource="true"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>20</var-value>
+                </var>
+            </field>
+        </form>
+        <form name="user">
+            <field property="userName" depends="required,mask,maxlength,minlength">
+                <arg0 key="userName"/>
+                <var>
+                   <var-name>mask</var-name>
+                   <var-value>^[0-9A-Za-z_]+$</var-value>
+                </var>
+                <var>
+                   <var-name>minlength</var-name>
+                   <var-value>4</var-value>
+                </var>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>20</var-value>
+                </var>
+            </field>
+            <field property="password" depends="twofields,minlength">
+                <arg0 key="password"/>
+                <arg1 key="confirmPass"/>
+                <var>
+                   <var-name>secondProperty</var-name>
+                   <var-value>confirmPass</var-value>
+                </var>
+                <var>
+                   <var-name>minlength</var-name>
+                   <var-value>4</var-value>
+                </var>
+            </field>
+            <field property="realName" depends="required,maxlength">
+                <arg0 key="realName"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>20</var-value>
+                </var>
+            </field>
+            <field property="email" depends="required,email">
+                <arg0 key="email"/>
+            </field>
+        </form>
+        <form name="role">
+            <field property="roleName" depends="required,maxlength">
+                <arg0 key="ca.role.name" resource="true"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>20</var-value>
+                </var>
+            </field>
+        </form>
+        <form name="webModule">
+            <field property="webModuleName" depends="required,maxlength">
+                <arg0 key="ca.web_module.name" resource="true"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>50</var-value>
+                </var>
+            </field>
+        </form>
+        <form name="resource">
+            <!--field property="resourceID" depends="required,mask,maxlength,minlength,validwhen"-->
+            <field property="resourceID" depends="required,mask,maxlength,minlength">
+                <arg0 key="ca.resource.resource_id" resource="true"/>
+                <arg1 key="start with 'function_'!"/>
+                <var>
+                   <var-name>mask</var-name>
+                   <var-value>^function_[0-9A-Za-z_]*$</var-value>
+                </var>
+                <var>
+                   <var-name>minlength</var-name>
+                   <var-value>10</var-value>
+                </var>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>50</var-value>
+                </var>
+                <!--var>
+                   <var-name>test</var-name>
+                   <var-value>(*this* > "function")</var-value>
+                </var-->
+            </field>
+            <field property="resourceName" depends="required,maxlength,minlength">
+                <arg0 key="ca.resource.resource_name" resource="true"/>
+                <var>
+                   <var-name>minlength</var-name>
+                   <var-value>4</var-value>
+                </var>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>50</var-value>
+                </var>
+            </field>
+            <field property="actionURL" depends="required,mask,maxlength">
+                <arg0 key="ca.resource.action_url" resource="true"/>
+                <var>
+                   <var-name>mask</var-name>
+                   <var-value>^[0-9A-Za-z_/.?=&amp;]+$</var-value>
+                </var>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>200</var-value>
+                </var>
+            </field>
+        </form>
+        <form name="workflowDriver">
+            <field property="flowDriverName" depends="required,maxlength">
+                <arg0 key="driver.name" resource="true"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>50</var-value>
+                </var>
+            </field>
+            <field property="writeURL" depends="required,mask">
+                <arg0 key="WRITE_URL"/>
+                <var>
+                   <var-name>mask</var-name>
+                   <var-value>^[0-9A-Za-z_/.?=&amp;]+$</var-value>
+                </var>
+            </field>
+            <field property="contextPath" depends="required,mask">
+                <arg0 key="ContextPath"/>
+                <var>
+                   <var-name>mask</var-name>
+                   <var-value>^[0-9A-Za-z_/.?=&amp;]+$</var-value>
+                </var>
+            </field>
+        </form>
+        <form name="wFDriverInputParam">
+            <field property="paramName" depends="required,mask">
+                <arg0 key="paramName"/>
+                <var>
+                   <var-name>mask</var-name>
+                   <var-value>^[0-9A-Za-z_/.?=&amp;]+$</var-value>
+                </var>
+            </field>
+            <field property="paramAlias" depends="required">
+                <arg0 key="paramAlias"/>
+            </field>
+        </form>
+        <form name="wFDriverOutputParam">
+            <field property="paramName" depends="required,mask">
+                <arg0 key="paramName"/>
+                <var>
+                   <var-name>mask</var-name>
+                   <var-value>^[0-9A-Za-z_/.?=&amp;]+$</var-value>
+                </var>
+            </field>
+            <field property="paramAlias" depends="required">
+                <arg0 key="paramAlias"/>
+            </field>
+        </form>
+        <form name="wFDriverOutputParamEnume">
+            <field property="driverOutputParamEnumeValue" depends="required">
+                <arg0 key="OutputParamEnumeValue"/>
+            </field>
+        </form>
+        <form name="businessType">
+            <field property="typeName" depends="required,maxlength">
+                <arg0 key="TypeName"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>50</var-value>
+                </var>
+            </field>
+        </form>
+        <form name="flowDeploy">
+            <field property="flowDeployName" depends="required,maxlength">
+                <arg0 key="FlowDeployName"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>50</var-value>
+                </var>
+            </field>
+        </form>
+    </formset>
+</form-validation>

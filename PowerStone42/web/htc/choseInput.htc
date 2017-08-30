@@ -1,0 +1,455 @@
+<public:component name="choseInput" urn="choseInput">
+<public:Property name="xmlSource" put="putXMLSource"/>  //输入数据类型
+<public:Property name="indexName"/>  //输入数据类型
+<public:Property name="captionPropty"/>  //输入数据类型
+<public:Property name="init" put="initialize"/>  //输入数据类型
+<public:Property name="vNAME" />  //重载数值
+<public:Property name="value" get="getValue" put="putValue"/>
+<public:Property name="pValue" get="getPValue"/>
+
+<iframe id=choseFrame name='choseFrame' src='about:blank' frameBorder=0 style='position:absolute;width:0px;height:0px'></iframe>
+
+<script language="JavaScript">
+<!--
+var oNewInput;
+var oXMLDoc;
+var oFrame;
+var oTable;
+var oFrameWin;
+var oOldInput;
+var trChosed;
+
+var strTable = '<table width="230" style="font:12px;cursor:default;"   border="0" cellpadding="0"cellspacing="1"  bordercolorlight="#FFFFFF" bordercolordark="#999999" bgcolor="#CCCCCC">';
+strTable += "<tr  bgcolor='#D4D0C8'>";
+strTable += '<td width="80" height="20" align="center">I&nbsp;&nbsp;&nbsp;&nbsp;D</td>';
+strTable += '<td width="92" align="center">用户名</td>';
+strTable += '<td width="78" align="center">E-mail</td>';
+strTable += '</tr>';
+strTable += '<tr style="display:none"   bgcolor="#FFFFFF">';
+strTable += '<td height="18"  align="center">&nbsp;</td>';
+strTable += '<td>&nbsp;</td>';
+strTable += '<td>&nbsp;</td>';
+strTable += '</tr>';
+strTable += '</table>';
+
+function getPValue(){
+		if(element.tagName.toUpperCase() == "DIV"){//如果是DIV
+			return element.innerText;
+		}
+		if(element.tagName.toUpperCase() == "INPUT"){		
+
+			var objRange = element.createTextRange();
+			objRange.expand("textedit");
+			return objRange.text;
+		}
+}
+
+function putValue(captionValue){
+	if(element.tagName.toUpperCase() == "DIV"){//如果是DIV
+		element.innerText = captionValue;
+	}
+	if(element.tagName.toUpperCase() == "INPUT"){
+		var objRange = element.createTextRange();
+		objRange.expand("textedit");
+		objRange.text = captionValue;
+	}
+}
+
+function getValue(flag){//得到数据
+	if(flag){
+		if(element.tagName.toUpperCase() == "DIV"){//如果是DIV
+			return element.innerText;
+		}
+		if(element.tagName.toUpperCase() == "INPUT"){		
+
+			var objRange = element.createTextRange();
+			objRange.expand("textedit");
+			return objRange.text;
+		}
+	}else{
+		return oNewInput.value;
+	}
+}
+
+function putXMLSource(xml){//设置数据
+	oXMLDoc = inputXML(xml);
+}//end function putXMLData
+
+function inputXML(argSource){ //objXMLDoc接收XML文件数据
+    var objXMLDoc = null;
+    try{
+      switch(typeof(argSource)){
+        case "string"://XML字节流
+          if(argSource.search(/\./) != -1 && argSource.search(/\</) == -1){ //xml file's location
+
+            objXMLDoc = new ActiveXObject("MSXML2.DOMDocument");
+            objXMLDoc.async = false;
+            if(argSource.search(/\+/) != -1) argSource = eval(argSource);
+              objXMLDoc.load(argSource);
+              break;
+            }
+            if(argSource.search(/\</) != -1){ //xml string
+              objXMLDoc = new ActiveXObject("MSXML2.DOMDocument");
+              objXMLDoc.loadXML(argSource);
+              break;
+            }
+            objXMLDoc = eval(argSource);
+            objXMLDoc = (objXMLDoc.XMLDocument)?(objXMLDoc.XMLDocument):null; //xml data island
+
+            break;
+        case "object"://XMLDOM对象
+
+            if(argSource.xml) return objXMLDoc = argSource; //xml document object
+            break;
+            default:
+            objXMLDoc = null;
+      }
+      if (!objXMLDoc.xml) objXMLDoc = null;
+    }catch(err){ objXMLDoc = null; }
+
+    if(objXMLDoc) objXMLDoc.setProperty("SelectionLanguage","XPath");
+    return objXMLDoc;
+   }
+
+function findByIndex(flag){//通过Index来查找相应的记录并返回r的列表
+
+	if(flag){
+		var indexValue = getValue(true);
+	}else{
+		var indexValue = oNewInput.value;
+	}
+	if(oXMLDoc){
+		var oNodes;
+		var xpath = "//r[@" + indexName + "='" + indexValue + "']";
+		
+		oNodes = oXMLDoc.selectNodes(xpath);//查找列表
+		return oNodes;
+	}
+	return null;
+}//end function findByIndex
+
+
+function findByCaption(){//通过标签来查找相应的记录并返回r的列表
+	if(oXMLDoc){
+		var oNodes;
+		var xpath = "//r[contains(@" + captionPropty + ", '" + getValue(true) + "')]";
+		
+		oNodes = oXMLDoc.selectNodes(xpath);//查找列表
+		return oNodes;
+	}
+	return null;
+}//end function findByIndex
+
+
+function doBlur(){//邦定失去焦点的事件
+
+	var oNodes;
+	if(getValue(true) != ""){
+		oNodes = findByCaption();
+	}
+
+	if(oNodes){//如果已经找到数据
+		if(oNodes.length == 1){//只有一个
+			var firstNode = oNodes[0];
+			if(firstNode){
+				var index = firstNode.getAttribute(indexName);
+				var caption = firstNode.getAttribute(captionPropty);
+				oNewInput.value = index;
+				element.value = caption;
+				inputRight();
+			}else{
+				foundNoEl();
+			}
+		}
+		if(oNodes.length == 0){//没有找到
+			var oNode = findByIndex(true);
+			if(oNode.length > 0){
+				var index = oNode[0].getAttribute(indexName);
+				var caption = oNode[0].getAttribute(captionPropty);
+				oNewInput.value = index;
+				element.value = caption;
+				inputRight();				
+			}else{
+				foundNoEl();
+			}
+		}
+
+		if(oNodes.length > 1){//找到了多个
+			whenMany(oNodes);
+		}
+	}else{//没有人
+			foundNoEl();
+	}//end if(oNodes)
+}//end function doBlur 
+
+function whenMany(list){//处理有多个的情况
+		if(oFrame.contentWindow)	//ie5.5
+		{
+			win=oFrame.contentWindow;
+		}
+		else
+		{	
+			win=window.open(element.FrameSrc||'about:blank',oFrame.name);
+		}
+		oFrameWin = win;
+		win.document.body.innerHTML = "";
+		win.document.body.insertAdjacentHTML("afterBegin",strTable);
+		oTable = win.document.body.children(0);
+		oTR = oTable.children(0).children(1);
+		oTBODY = oTable.children(0);
+	
+		var tmpTR;
+		for( i = 0 ; i < list.length; i ++){
+			tmpTR = oTR.cloneNode(true);
+			tmpTR.children(0).innerText = list[i].getAttribute("USERID");
+			tmpTR.children(1).innerText = list[i].getAttribute("USERNAME");
+			tmpTR.children(2).innerText = list[i].getAttribute("EMAIL");
+			oTBODY.insertAdjacentElement('beforeEnd', tmpTR);
+			tmpTR.style.display = "block";
+			tmpTR.ondblclick = doDblClickTR;
+			tmpTR.onclick = doClickTR;
+			tmpTR.onmouseover = mouseOver;
+			tmpTR.onmouseout = mouseOut;
+		}
+
+
+		win.document.body.style.cssText='border:0px;margin:0px;padding:0px;overflow-y:auto;overflow-x:hidden;';
+		oFrame.style.width = "250px";
+		oFrame.style.height = "200px";
+		ShowPanel();
+
+}//end function whenMany
+
+function mouseOver(){
+
+	oTR = oFrameWin.event.srcElement;
+	while(oTR.tagName.toUpperCase() != "TR"){
+		oTR = oTR.parentElement;
+	}
+	if(oTR != trChosed)
+		oTR.style.background = "#EBEBEB";
+
+}
+
+function mouseOut(){
+	oTR = oFrameWin.event.srcElement;
+	while(oTR.tagName.toUpperCase() != "TR"){
+		oTR = oTR.parentElement;
+	}
+	if(oTR != trChosed)
+		oTR.style.background = "#FFFFFF";
+
+}
+
+function doClickTR(){
+	if(trChosed){
+		trChosed.style.background = "#FFFFFF";
+	}
+	oTR = oFrameWin.event.srcElement;
+	while(oTR.tagName.toUpperCase() != "TR"){
+		oTR = oTR.parentElement;
+	}
+	oTR.style.background = "#6699FF";
+	trChosed = oTR;
+}
+
+function doDblClickTR(){//击点选择
+	element.document.attachEvent('onmousedown',document_onmousedown);
+	oTR = oFrameWin.event.srcElement;
+	
+	while(oTR.tagName.toUpperCase() != "TR"){
+		oTR = oTR.parentElement;
+	}
+
+	var vName = oTR.children(1).innerText;
+	var vEmployeeID = oTR.children(0).innerText;
+
+	oNewInput.value = vEmployeeID;
+	element.value = vName;
+	inputRight();
+
+	HidePanel();
+}
+
+function foundNoEl(){//没有找到的处理
+		element.style.color = "#FF0000";
+		element.title="输入数据错误"
+		oNewInput.value = "";
+}//end funciton foundNoEl();
+
+function inputRight(){//输入正确时的样式
+		element.style.color = "";
+		element.title=""
+		HidePanel();
+}
+
+function doKey(){//当回车的时候
+
+}
+
+function HidePanel(){//隐藏窗口
+	if(oNewInput.value == ""){
+		foundNoEl();
+	}
+	oFrame.style.display = 'none';
+
+}
+
+//显示窗口
+function ShowPanel()
+{
+	
+//	UpdateUI();
+	
+	element.document.attachEvent('onmousedown',document_onmousedown);
+
+	oFrame.style.display='block';
+
+	var pos=LostinetWebCalcPosition(oFrame,element);
+	
+	var flag = LostinetWebAdjustMirror(oFrame, element, pos);
+	if(flag){
+		pos.top = pos.top - element.offsetHeight;
+	}else{
+		pos.top = pos.top + element.offsetHeight;
+	}
+	oFrame.style.left=pos.left ;
+	oFrame.style.top=pos.top;
+	
+}
+
+//除去邦定焦点
+function document_onmousedown()	
+{
+	var src=event.srcElement;
+	if(element.contains(src))return;
+	if(oTable.contains(src))return;
+	
+	window.document.detachEvent("onmousedown",document_onmousedown);
+	HidePanel();
+}
+//计算位置
+function LostinetWebGetScrollPostion(e)
+{
+	var b=e.document.body;
+	if(e==b)return {left:0,top:0};
+	with(e.getBoundingClientRect())
+	{
+		return {left:b.scrollLeft+left,top:b.scrollTop+top};
+	}
+}
+//get the position of a element ( by the client offset )
+function LostinetWebGetClientPosition(e)
+{
+	var b=e.document.body;
+	if(e==b)return {left:-b.scrollLeft,top:-b.scrollTop};
+	with(e.getBoundingClientRect())
+	{
+		return {left:left-b.clientLeft,top:top-b.clientTop};
+	}
+}
+//get absolute or relative parent
+function LostinetWebGetStandParent(e)
+{
+	for(var p=e.parentElement;p!=null;p=p.parentElement)
+	{
+		var sp=p.currentStyle.position;
+		if(sp=='absolute'||sp=='relative')
+			return p;
+	}
+	return e.document.body;
+}
+//calc the position of floate that relative to e
+function LostinetWebCalcPosition(floate,e)
+{
+	var epos=LostinetWebGetScrollPostion(e);
+	var spos=LostinetWebGetScrollPostion(LostinetWebGetStandParent(floate));
+	var s=LostinetWebGetStandParent(floate);
+	return {left:epos.left-spos.left-s.clientLeft,top:epos.top-spos.top-s.clientTop};
+}
+//get the best position to put the floate
+function LostinetWebAdjustMirror(floate,e,pos)
+{
+	//c:Client,f:floate,e:e,p:floate's StandParent,m:Mirror
+	var flag = false;
+
+	var cw=e.document.body.clientWidth;
+	var ch=e.document.body.clientHeight;
+	var fw=floate.offsetWidth;
+	var fh=floate.offsetHeight;
+	var ew=e.offsetWidth;
+	var eh=e.offsetHeight;
+	
+	var ecpos=LostinetWebGetClientPosition(e);
+	var empos={left:ecpos.left+ew/2,top:ecpos.top+eh/2};
+	var pcpos=LostinetWebGetClientPosition(LostinetWebGetStandParent(floate));
+	var fcpos=LostinetWebGetClientPosition(floate);
+	var fmpos={left:pcpos.left+pos.left+fw/2,top:pcpos.top+pos.top+fh/2};
+	
+	//left<-->right
+	if( (fmpos.left<empos.left) ? ((fmpos.left-fw/2<0)&&((empos.left*2-fmpos.left)+fw/2<=cw)) : ((fmpos.left+fw/2>cw)&&((empos.left*2-fmpos.left)-fw/2>=0)) )
+		fmpos.left=empos.left*2-fmpos.left;
+	
+	//top<-->bottom
+	if( (fmpos.top<empos.top) ? ((fmpos.top-fh/2<0)&&((empos.top*2-fmpos.top)+fh/2<=ch)) : ((fmpos.top+fh/2>ch)&&((empos.top*2-fmpos.top)-fh/2>=0)) ){
+			flag = true;
+			fmpos.top=empos.top*2-fmpos.top;
+		}
+	
+	pos.left=fmpos.left-pcpos.left-fw/2;
+	pos.top=fmpos.top-pcpos.top-fh/2;
+	return flag;
+}
+
+function initialize(){//初始化
+	try{
+	
+		element.visibity = "hidden";
+		//转换新的INPUT
+		oNewInput = document.createElement("<input type='hidden' name='" + vNAME + "'>");
+		element.parentElement.appendChild(oNewInput);
+		oNewInput.value = getValue(true);
+		
+		element.name = vNAME + "_choseInput";
+		element.NAME = vNAME + "_choseInput";
+
+		//初始化一个iframe
+		oFrame = document.all('choseFrame');
+		window.document.body.insertAdjacentElement('afterbegin',oFrame);
+
+		//邦定失去焦点的消息
+		with(element){
+			onblur = doBlur;
+			onkeydown = doKey;
+		}
+
+		//查找到数据
+		var oNodes = findByIndex();
+		if(oNodes){//如果已经找到数据
+			var firstNode = oNodes[0];
+			if(firstNode){
+				var caption = firstNode.getAttribute(captionPropty);
+				if(element.tagName.toUpperCase() != "INPUT"){//处理不是input的情况
+					
+					element.innerText = caption;
+				}else{//是Input
+					element.value = caption;
+				}
+			}else{
+				if(element.tagName.toUpperCase() != "INPUT"){//处理不是input的情况
+					element.innerText = "";
+				}else{//是Input
+					element.value = "";
+				}
+			}
+		
+		}
+		element.visibity = "visiable";
+	}catch(e){
+		alert(e.description);
+		element.value = "";
+	}
+}
+//-->
+</script>
+</public:component>

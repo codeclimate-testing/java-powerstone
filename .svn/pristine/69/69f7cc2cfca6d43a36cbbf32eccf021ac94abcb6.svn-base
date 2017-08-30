@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package Id="dreambike" Name="自行车定购流程" xmlns="http://www.wfmc.org/2002/XPDL1.0" xmlns:xpdl="http://www.wfmc.org/2002/XPDL1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.wfmc.org/2002/XPDL1.0 http://wfmc.org/standards/docs/TC-1025_schema_10_xpdl.xsd">
+    <PackageHeader>
+        <XPDLVersion>1.0</XPDLVersion>
+        <Vendor>Together</Vendor>
+        <Created>2004-04-20 10:29:12</Created>
+    </PackageHeader>
+    <RedefinableHeader PublicationStatus="UNDER_TEST"/>
+    <ConformanceClass GraphConformance="NON_BLOCKED"/>
+    <TypeDeclarations>
+        <TypeDeclaration Id="dreambike_Typ1" Name="是否">
+            <EnumerationType>
+                <EnumerationValue Name="Y"/>
+                <EnumerationValue Name="N"/>
+            </EnumerationType>
+        </TypeDeclaration>
+    </TypeDeclarations>
+    <WorkflowProcesses>
+        <WorkflowProcess AccessLevel="PUBLIC" Id="dreambike_state_v2" Name="定购主流程(state)_v2">
+            <ProcessHeader DurationUnit="D">
+                <Created>2004-04-20 10:30:14</Created>
+            </ProcessHeader>
+            <RedefinableHeader PublicationStatus="UNDER_TEST"/>
+            <DataFields>
+                <DataField Id="stockState" IsArray="FALSE" Name="库存状态">
+                    <DataType>
+                        <DeclaredType Id="dreambike_Typ1"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="stockDetail" IsArray="FALSE" Name="库存分析">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="techState" IsArray="FALSE" Name="技术可行性">
+                    <DataType>
+                        <DeclaredType Id="dreambike_Typ1"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="techDetail" IsArray="FALSE" Name="技术分析">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="price" IsArray="FALSE" Name="单价">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="priceDetail" IsArray="FALSE" Name="价格分析">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="customeEmail" IsArray="FALSE" Name="客户email">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="customeID" IsArray="FALSE" Name="客户ID">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="productID" IsArray="FALSE" Name="产品型号">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+                <DataField Id="orderID" IsArray="FALSE" Name="订单号">
+                    <DataType>
+                        <BasicType Type="STRING"/>
+                    </DataType>
+                </DataField>
+            </DataFields>
+            <Participants>
+                <Participant Id="dreambike_Wor1_Par1" Name="流程参与者">
+                    <ParticipantType Type="ROLE"/>
+                </Participant>
+            </Participants>
+            <Activities>
+                <Activity Id="dreambike_Wor1_Act1" Name="客户提交订单">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Split Type="AND">
+                                <TransitionRefs>
+                                    <TransitionRef Id="dreambike_Wor1_Tra2"/>
+                                    <TransitionRef Id="dreambike_Wor1_Tra3"/>
+                                    <TransitionRef Id="dreambike_Wor1_Tra4"/>
+                                </TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="380"/>
+                        <ExtendedAttribute Name="YOffset" Value="80"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="orderID"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="customeID"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="customeEmail"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="productID"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act2" Name="计算价格">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="250"/>
+                        <ExtendedAttribute Name="YOffset" Value="170"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="price"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="priceDetail"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="orderID"/>
+                        <ExtendedAttribute Name="distributable" Value="true"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="productID"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act3" Name="检查库存">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="380"/>
+                        <ExtendedAttribute Name="YOffset" Value="170"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="stockState"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="stockDetail"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="orderID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="productID"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act4" Name="技术可行性验证">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="500"/>
+                        <ExtendedAttribute Name="YOffset" Value="170"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="techState"/>
+                        <ExtendedAttribute Name="VariableToProcess_OUT" Value="techDetail"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="orderID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="productID"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_R5" Name="R1">
+                    <Route/>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="AND"/>
+                            <Split Type="XOR">
+                                <TransitionRefs>
+                                    <TransitionRef Id="dreambike_state_v2_Tra27"/>
+                                    <TransitionRef Id="dreambike_state_v2_Tra54"/>
+                                    <TransitionRef Id="dreambike_Wor1_Tra82"/>
+                                </TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="380"/>
+                        <ExtendedAttribute Name="YOffset" Value="270"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act7" Name="准备拒绝函">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="XOR"/>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="380"/>
+                        <ExtendedAttribute Name="YOffset" Value="370"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="customeEmail"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="customeID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="productID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="customeEmail"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act8" Name="准备接收函">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="500"/>
+                        <ExtendedAttribute Name="YOffset" Value="370"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="orderID"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="customeID"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="customeEmail"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="price"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="priceDetail"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="price"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="customeEmail"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="productID"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act6" Name="计划生产(将触发生产流程)">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="650"/>
+                        <ExtendedAttribute Name="YOffset" Value="270"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="orderID"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="productID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="productID"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act9" Name="订单处理完毕确认">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="XOR"/>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="380"/>
+                        <ExtendedAttribute Name="YOffset" Value="460"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="orderID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="orderID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="productID"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="customeEmail"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_R7" Name="可以生产">
+                    <Route/>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Split Type="AND">
+                                <TransitionRefs>
+                                    <TransitionRef Id="dreambike_Wor1_Tra83"/>
+                                    <TransitionRef Id="dreambike_Wor1_Tra84"/>
+                                </TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="500"/>
+                        <ExtendedAttribute Name="YOffset" Value="270"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_R6" Name="库存不足">
+                    <Route/>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Split Type="AND">
+                                <TransitionRefs>
+                                    <TransitionRef Id="dreambike_state_v2_Tra29"/>
+                                    <TransitionRef Id="dreambike_state_v2_Tra28"/>
+                                </TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="250"/>
+                        <ExtendedAttribute Name="YOffset" Value="270"/>
+                    </ExtendedAttributes>
+                </Activity>
+                <Activity Id="dreambike_Wor1_Act5" Name="计划采购零部件">
+                    <Implementation>
+                        <No/>
+                    </Implementation>
+                    <Performer>dreambike_Wor1_Par1</Performer>
+                    <StartMode>
+                        <Automatic/>
+                    </StartMode>
+                    <FinishMode>
+                        <Automatic/>
+                    </FinishMode>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="ParticipantID" Value="dreambike_Wor1_Par1"/>
+                        <ExtendedAttribute Name="XOffset" Value="110"/>
+                        <ExtendedAttribute Name="YOffset" Value="270"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="orderID"/>
+                        <ExtendedAttribute Name="VariableToProcess_IN" Value="stockDetail"/>
+                        <ExtendedAttribute Name="Preview_Variable" Value="stockDetail"/>
+                    </ExtendedAttributes>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition From="dreambike_Wor1_Act1" Id="dreambike_Wor1_Tra2" Name="Transition" To="dreambike_Wor1_Act2">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_Act1" Id="dreambike_Wor1_Tra3" Name="Transition" To="dreambike_Wor1_Act3">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_Act1" Id="dreambike_Wor1_Tra4" Name="Transition" To="dreambike_Wor1_Act4">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_Act2" Id="dreambike_Wor1_Tra5" Name="Transition" To="dreambike_Wor1_R5">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_Act3" Id="dreambike_Wor1_Tra6" Name="Transition" To="dreambike_Wor1_R5">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_Act4" Id="dreambike_Wor1_Tra7" Name="Transition" To="dreambike_Wor1_R5">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_R5" Id="dreambike_Wor1_Tra82" Name="Transition" To="dreambike_Wor1_R7">
+                    <Condition Type="OTHERWISE"/>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_R7" Id="dreambike_Wor1_Tra83" Name="Transition" To="dreambike_Wor1_Act8">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_R7" Id="dreambike_Wor1_Tra84" Name="Transition" To="dreambike_Wor1_Act6">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_R5" Id="dreambike_state_v2_Tra27" Name="转移" To="dreambike_Wor1_R6">
+                    <Condition Type="CONDITION">stockState=="N"</Condition>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_R6" Id="dreambike_state_v2_Tra28" Name="转移" To="dreambike_Wor1_Act7">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_R6" Id="dreambike_state_v2_Tra29" Name="转移" To="dreambike_Wor1_Act5">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_Act7" Id="dreambike_state_v2_Tra31" Name="转移" To="dreambike_Wor1_Act9">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_Act8" Id="dreambike_state_v2_Tra33" Name="转移" To="dreambike_Wor1_Act9">
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+                <Transition From="dreambike_Wor1_R5" Id="dreambike_state_v2_Tra54" Name="转移" To="dreambike_Wor1_Act7">
+                    <Condition Type="CONDITION">techState=="N"</Condition>
+                    <ExtendedAttributes>
+                        <ExtendedAttribute Name="RoutingType" Value="NOROUTING"/>
+                    </ExtendedAttributes>
+                </Transition>
+            </Transitions>
+            <ExtendedAttributes>
+                <ExtendedAttribute Name="StartOfWorkflow" Value="dreambike_Wor1_Par1;dreambike_Wor1_Act1;370;10;NOROUTING"/>
+                <ExtendedAttribute Name="EndOfWorkflow" Value="dreambike_Wor1_Par1;dreambike_Wor1_Act5;180;370;NOROUTING"/>
+                <ExtendedAttribute Name="EndOfWorkflow" Value="dreambike_Wor1_Par1;dreambike_Wor1_Act9;520;460;NOROUTING"/>
+                <ExtendedAttribute Name="EndOfWorkflow" Value="dreambike_Wor1_Par1;dreambike_Wor1_Act6;690;370;NOROUTING"/>
+                <ExtendedAttribute Name="ParticipantVisualOrder" Value="dreambike_Wor1_Par1;"/>
+                <ExtendedAttribute Name="Flow_Preview_Variable" Value="price"/>
+                <ExtendedAttribute Name="Dead_Line_Variable" Value="startTime"/>
+            </ExtendedAttributes>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+    <ExtendedAttributes>
+        <ExtendedAttribute Name="MadeBy" Value="JaWE"/>
+        <ExtendedAttribute Name="Version" Value="1.2"/>
+    </ExtendedAttributes>
+</Package>

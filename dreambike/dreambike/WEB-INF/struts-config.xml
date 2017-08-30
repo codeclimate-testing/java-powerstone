@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+  <global-forwards>
+    <forward name="read" path="/readSuccess.jsp">
+    </forward>
+    <forward name="write" path="/writeSuccess.jsp">
+    </forward>
+  </global-forwards>
+  <action-mappings>
+    <action path="/RecieveOrder" type="com.norteksoft.dreambike.RecieveOrderAction" />
+    <action path="/CalculatePriceReadAction" type="com.norteksoft.dreambike.CalculatePriceReadAction" />
+    <action path="/CalculatePriceWriteAction" type="com.norteksoft.dreambike.CalculatePriceWriteAction" />
+    <action path="/CheckStoreReadAction" type="com.norteksoft.dreambike.CheckStoreReadAction" />
+    <action path="/CheckStoreWriteAction" type="com.norteksoft.dreambike.CheckStoreWriteAction" />
+    <action path="/CheckTecReadAction" type="com.norteksoft.dreambike.CheckTecReadAction" />
+    <action path="/CheckTecWriteAction" type="com.norteksoft.dreambike.CheckTecWriteAction" />
+    <action path="/RefuseForStoreReadAction" type="com.norteksoft.dreambike.RefuseForStoreReadAction" />
+    <action path="/RefuseForStoreWriteAction" type="com.norteksoft.dreambike.RefuseForStoreWriteAction" />
+    <action path="/RefuseForTecReadAction" type="com.norteksoft.dreambike.RefuseForTecReadAction" />
+    <action path="/RefuseForTecWriteAction" type="com.norteksoft.dreambike.RefuseForTecWriteAction" />
+    <action path="/PrepareLetterReadAction" type="com.norteksoft.dreambike.PrepareLetterReadAction" />
+    <action path="/PrepareLetterWriteAction" type="com.norteksoft.dreambike.PrepareLetterWriteAction" />
+    <action path="/ProduceAndShipReadAction" type="com.norteksoft.dreambike.ProduceAndShipReadAction" />
+    <action path="/ProduceAndShipWriteAction" type="com.norteksoft.dreambike.ProduceAndShipWriteAction" />
+    <action path="/SendEmailReadAction" type="com.norteksoft.dreambike.SendEmailReadAction" />
+    <action path="/SendEmailWriteAction" type="com.norteksoft.dreambike.SendEmailWriteAction" />
+    <action path="/ConfirmOrderReadAction" type="com.norteksoft.dreambike.ConfirmOrderReadAction" />
+    <action path="/ConfirmOrderWriteAction" type="com.norteksoft.dreambike.ConfirmOrderWriteAction" />
+  </action-mappings>
+  <plug-in className="org.powerstone.workflow.flowdriver.WorkflowFactoryPlugin" />
+</struts-config>

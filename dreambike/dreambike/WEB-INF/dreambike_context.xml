@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+    <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+    <bean id="propertyConfigure" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name="locations">
+          <list>
+             <value>WEB-INF/classes/dreambike_database.properties</value>
+          </list>
+       </property>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName">
+          <value>${hibernate.connection.driver_class}</value>
+        </property>
+        <property name="url">
+          <value>${hibernate.connection.url}</value>
+        </property>
+        <property name="username"><value>${hibernate.connection.username}</value></property>
+        <property name="password"><value>${hibernate.connection.password}</value></property>
+    </bean>
+
+    <!-- Hibernate SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource"><ref local="dataSource"/></property>
+        <property name="mappingResources">
+            <list>
+              <value>ps_dreambike/BikeOrder.hbm.xml</value>
+              <value>ps_dreambike/Produce.hbm.xml</value>
+              <value>ps_dreambike/Purchase.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+        <props>
+            <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+            <prop key="hibernate.hbm2ddl.auto">create</prop>
+            <prop key="hibernate.jdbc.fetch_size">50</prop>
+            <prop key="hibernate.jdbc.batch_size">20</prop>
+            <prop key="hibernate.jdbc.use_scrollable_resultset">false</prop>
+            <prop key="hibernate.use_outer_join">true</prop>
+            <prop key="hibernate.show_sql">false</prop>
+            <prop key="hibernate.cache.use_query_cache">true</prop>
+            <prop key="hibernate.connection.pool_size">20</prop>
+            <prop key="hibernate.cache.provider_class">org.hibernate.cache.OSCacheProvider</prop>
+        </props>
+        </property>
+    </bean>
+
+    <!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory"><ref local="sessionFactory"/></property>
+    </bean>
+
+    <bean id="absTransactionProxy" abstract="true"
+      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+	<property name="transactionManager">
+          <ref local="transactionManager"/>
+        </property>
+	<property name="transactionAttributes">
+          <props>
+             <prop key="*">PROPAGATION_REQUIRED</prop>
+          </props>
+	</property>
+    </bean>
+    <bean id="dreambikeManager" parent="absTransactionProxy">
+        <property name="target">
+           <bean class="ps_dreambike.DreambikeManagerImpl">
+             <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+           </bean>
+        </property>
+    </bean>
+
+    <bean id="absWorkflowDriver" abstract="true"
+      class="org.powerstone.workflow.flowdriver.AbstractWorkflowDriver">
+      <property name="caDelegater"><ref bean="caDelegater"/></property>
+      <property name="flowEngine"><ref bean="workflowEngine"/></property>
+      <property name="driverManager"><ref bean="workflowDriverManager"/></property>
+      <property name="taskManager"><ref bean="flowTaskManager"/></property>
+    </bean>
+</beans>

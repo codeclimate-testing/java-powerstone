@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.powerstone.ca.model.WebModule"
+        table="CA_WEB_MODULE"
+    >
+
+        <id
+            name="webModuleID"
+            column="PK_WEB_MODULE_ID"
+            type="java.lang.Long"
+            unsaved-value="-1"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-WebModule.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="webModuleName"
+            type="string"
+            column="VC_WEB_MODULE_NAME"
+            length="255"
+            not-null="true"
+            unique="true"
+        />
+
+        <property
+            name="facePage"
+            type="string"
+            column="VC_FACE_PAGE"
+            length="255"
+        />
+
+        <property
+            name="status"
+            type="string"
+            column="VC_STATUS"
+            length="255"
+        />
+
+        <bag
+            name="resources"
+            lazy="true"
+            cascade="all-delete-orphan"
+        >
+
+              <key
+                  column="FK_WEB_MODULE_ID"
+              >
+              </key>
+
+              <one-to-many
+                  class="org.powerstone.ca.model.Resource"
+              />
+
+        </bag>
+
+        <bag
+            name="users"
+            table="CA_JOIN_USER_WEBMODULE"
+            lazy="true"
+            cascade="all"
+        >
+
+              <key
+                  column="FK_WEB_MODULE_ID"
+              >
+              </key>
+
+              <many-to-many
+                  class="org.powerstone.ca.model.WebModule"
+                  column="FK_USER_ID"
+                  outer-join="auto"
+               />
+
+        </bag>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-WebModule.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

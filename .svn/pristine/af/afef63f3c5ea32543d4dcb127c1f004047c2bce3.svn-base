@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="ps_dreambike.BikeOrder"
+        table="DB_ORDER"
+    >
+
+        <id
+            name="orderID"
+            column="PK_ID"
+            type="java.lang.Long"
+            unsaved-value="-1"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-BikeOrder.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="productID"
+            type="string"
+            column="VC_PRODUCT_ID"
+            length="255"
+        />
+
+        <property
+            name="customeID"
+            type="string"
+            column="VC_CUSTOME_ID"
+            length="255"
+        />
+
+        <property
+            name="customeEmail"
+            type="string"
+            column="VC_CUSTOME_EMAIL"
+            length="255"
+        />
+
+        <property
+            name="priceDetail"
+            type="string"
+            column="VC_PRICE_DETAIL"
+            length="255"
+        />
+
+        <property
+            name="price"
+            type="string"
+            column="VC_PRICE"
+            length="255"
+        />
+
+        <property
+            name="techState"
+            type="string"
+            column="VC_TECH_STATE"
+            length="255"
+        />
+
+        <property
+            name="techDetail"
+            type="string"
+            column="VC_TECH_DETAIL"
+            length="255"
+        />
+
+        <property
+            name="stockState"
+            type="string"
+            column="VC_STOCK_STATE"
+            length="255"
+        />
+
+        <property
+            name="stockDetail"
+            type="string"
+            column="VC_STOCK_DETAIL"
+            length="255"
+        />
+
+        <property
+            name="emailReceiveNote"
+            type="string"
+            column="VC_EMAIL_RECEIVE_NOTE"
+            length="1500"
+        />
+
+        <property
+            name="emailRefuse"
+            type="string"
+            column="VC_EMAIL_REFUSE"
+            length="1500"
+        />
+
+        <many-to-one
+            name="produce"
+            class="ps_dreambike.Produce"
+            cascade="none"
+            outer-join="auto"
+            column="FK_PRODUCE_ID"
+        />
+
+        <many-to-one
+            name="purchase"
+            class="ps_dreambike.Purchase"
+            cascade="none"
+            outer-join="auto"
+            column="FK_PURCHASE_ID"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-BikeOrder.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>ca</shortname>
+	<uri>http://www.powerstone.org/powerstone/ca</uri>
+        <tag>
+          <name>hasRightToDo</name>
+          <tagclass>org.powerstone.ca.tags.HasRightToDoTag</tagclass>
+          <bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>url</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>alt</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+        </tag>
+        <tag>
+          <name>hasNoRightToDoTag</name>
+          <tagclass>org.powerstone.ca.tags.HasNoRightToDoTag</tagclass>
+          <bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>url</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+        </tag>
+        <tag>
+          <name>online</name>
+          <tagclass>org.powerstone.ca.tags.OnlineTag</tagclass>
+          <bodycontent>JSP</bodycontent>
+        </tag>
+        <tag>
+          <name>notOnline</name>
+          <tagclass>org.powerstone.ca.tags.NotOnlineTag</tagclass>
+          <bodycontent>JSP</bodycontent>
+        </tag>
+        <tag>
+          <name>currentUser</name>
+          <tagclass>org.powerstone.ca.tags.CurrentUserIDTag</tagclass>
+        </tag>
+        <tag>
+          <name>currentUserName</name>
+          <tagclass>org.powerstone.ca.tags.CurrentUserNameTag</tagclass>
+        </tag>
+        <tag>
+          <name>currentRealName</name>
+          <tagclass>org.powerstone.ca.tags.CurrentRealNameTag</tagclass>
+        </tag>
+</taglib>

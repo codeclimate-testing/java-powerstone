@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+	<!-- MultipartResolver-->
+	<bean id="multipartResolver"
+           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+           <!-- 设置上传文件的最大尺寸为10MB -->
+           <property name="maxUploadSize">
+              <value>10485760</value>
+           </property>
+        </bean>
+
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/flow_meta/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+	<!-- HandlerMapping that dispatches all request to the MultiActionController below -->
+	<bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="defaultHandler"><ref local="flowMetaController"/></property>
+	</bean>
+
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="flowMetaController" class="org.powerstone.workflow.web.FlowMetaController">
+		<property name="methodNameResolver"><ref local="flowMetaControllerResolver"/></property>
+		<property name="flowMetaManager"><ref bean="flowMetaManager"/></property>
+	</bean>
+
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="flowMetaControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/wf/upload_page.fm">uploadPage</prop>
+              <prop key="/wf/upload_flow_file.fm">uploadFlowFile</prop>
+              <prop key="/wf/update_bt_of_flow.fm">updateBTOfFlow</prop>
+              <prop key="/wf/see_flow_meta.fm">seeFlowMeta</prop>
+              <prop key="/wf/remove_flow_meta.fm">removeFlowMeta</prop>
+              <prop key="/wf/preview_flow_meta.fm">previewFlowMeta</prop>
+              <prop key="/wf/preview_big.fm">previewBig</prop>
+              <prop key="/wf/update_preview_image.fm">updatePreviewImage</prop>
+              <prop key="/wf/preview_image_form.fm">previewImageForm</prop>
+            </props>
+	  </property>
+	</bean>
+</beans>

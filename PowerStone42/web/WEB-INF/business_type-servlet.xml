@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+        <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+           <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+                </prop>
+            </props>
+           </property>
+        </bean>
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages"/>
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/business_type/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+             <property name="mappings">
+                <props>
+                  <prop key="/wf/main.bt">businessTypeController</prop>
+                  <prop key="/wf/list_all_bts.bt">businessTypeController</prop>
+                  <prop key="/wf/list_bt_to_join.bt">businessTypeController</prop>
+                  <prop key="/wf/remove_bt.bt">businessTypeController</prop>
+                  <prop key="/wf/success_submit.bt">businessTypeController</prop>
+                  <prop key="/wf/edit_bt.bt">businessTypeFormController</prop>
+                </props>
+             </property>
+	</bean>
+
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="businessTypeController" class="org.powerstone.workflow.web.BusinessTypeController">
+		<property name="methodNameResolver"><ref local="businessTypeControllerResolver"/></property>
+		<property name="flowMetaManager"><ref bean="flowMetaManager"/></property>
+                <property name="businessTypeManager"><ref bean="businessTypeManager"/></property>
+	</bean>
+
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="businessTypeControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/wf/main.bt">main</prop>
+              <prop key="/wf/list_all_bts.bt">listAllBusinessTypes</prop>
+              <prop key="/wf/list_bt_to_join.bt">listBusinessTypesToJoin</prop>
+              <prop key="/wf/remove_bt.bt">removeBusinessType</prop>
+              <prop key="/wf/success_submit.bt">successSubmit</prop>
+            </props>
+	  </property>
+	</bean>
+        <bean id="businessTypeFormController"
+          class="org.powerstone.workflow.web.BusinessTypeFormController">
+                <property name="commandName"><value>businessType</value></property>
+  		<property name="commandClass"><value>org.powerstone.workflow.model.BusinessType</value></property>
+		<property name="formView" value="businessTypeForm"/>
+		<property name="successView" value="redirect:/wf/success_submit.bt"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="businessTypeManager"><ref bean="businessTypeManager"/></property>
+	</bean>
+        <bean id="beanValidator" class="org.springmodules.commons.validator.DefaultBeanValidator">
+               <property name="validatorFactory" ref="validatorFactory"/>
+        </bean>
+</beans>

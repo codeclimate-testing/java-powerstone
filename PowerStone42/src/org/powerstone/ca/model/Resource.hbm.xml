@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.powerstone.ca.model.Resource"
+        table="CA_RESOURCE"
+    >
+
+        <id
+            name="id"
+            column="PK_ID"
+            type="java.lang.Long"
+            unsaved-value="-1"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-Resource.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="resourceID"
+            type="string"
+            column="VC_RESOURCE_ID"
+            length="255"
+            not-null="true"
+            unique="true"
+        />
+
+        <property
+            name="resourceName"
+            type="string"
+            column="VC_RESOURCE_NAME"
+            length="255"
+            not-null="true"
+            unique="true"
+        />
+
+        <property
+            name="actionURL"
+            type="string"
+            column="VC_ACTION_URL"
+            length="255"
+            not-null="true"
+        />
+
+        <many-to-one
+            name="webModule"
+            class="org.powerstone.ca.model.WebModule"
+            cascade="none"
+            outer-join="auto"
+            column="FK_WEB_MODULE_ID"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Resource.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+        <query name="AllResources"><![CDATA[
+            select rs from Resource as rs
+        ]]></query>
+        <query name="AllWebModules"><![CDATA[
+            select wm from WebModule as wm
+        ]]></query>
+        <query name="ResourceByResourceID"><![CDATA[
+            select rs from Resource as rs where rs.resourceID=?
+        ]]></query>
+        <query name="ResourceByName"><![CDATA[
+            select rs from Resource as rs where rs.resourceName=?
+        ]]></query>
+
+</hibernate-mapping>

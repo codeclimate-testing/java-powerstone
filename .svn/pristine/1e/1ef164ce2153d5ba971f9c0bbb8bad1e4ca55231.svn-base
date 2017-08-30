@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+
+<beans>
+	<!-- Quartz Scheduler, with pre-registered triggers -->
+	<!-- Will automatically start scheduling on context startup -->
+	<bean id="scheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="sendTaskTrigger" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Job definition for sendTaskQuartzJob -->
+	<bean id="sendTaskJobDetail"
+		class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="beanName">
+			<value>sendTaskJobDetailProxy</value>
+		</property>
+		<property name="jobClass">
+			<value>org.powerstone.workflow.job.SendTaskQuartzJob</value>
+		</property>
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="sessionFactory">
+					<ref bean="ps_sessionFactory" />
+				</entry>
+				<entry key="flowTaskManager">
+					<ref bean="flowTaskManager" />
+				</entry>
+				<entry key="caDelegater">
+					<ref bean="caDelegater" />
+				</entry>
+				<entry key="mailSender">
+					<ref local="mailSender" />
+				</entry>
+				<entry key="mailFrom">
+					<value>${mail.from}</value>
+				</entry>
+				<entry key="mailText">
+					<value>${mail.text}</value>
+				</entry>
+				<entry key="mailTitle">
+					<value>${mail.title}</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- Trigger for the job defined above -->
+	<!-- Registered by the 'scheduler' bean -->
+	<bean id="sendTaskTrigger"
+		class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendTaskJobDetail" />
+		</property>
+		<property name="startDelay">
+			<value>43200000</value>
+		</property>
+		<property name="repeatInterval">
+			<value>43200000</value>
+		</property>
+	</bean>
+
+	<!-- MailSender implementation for JavaMail -->
+	<!-- Used by sendTaskQuartzJob -->
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+			<value>${mail.host}</value>
+		</property>
+	</bean>
+</beans>

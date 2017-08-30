@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+        <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+           <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+                </prop>
+            </props>
+           </property>
+        </bean>
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages"/>
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/flow_deploy/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+             <property name="mappings">
+                <props>
+                  <prop key="/wf/edit_flow_deploy.dpl">flowDeployFormController</prop>
+                  <prop key="/wf/remove_flow_deploy.dpl">flowDeployController</prop>
+                  <prop key="/wf/enable_flow_deploy.dpl">flowDeployController</prop>
+                  <prop key="/wf/disable_flow_deploy.dpl">flowDeployController</prop>
+                  <prop key="/wf/see_flow_deploy.dpl">flowDeployController</prop>
+                  <prop key="/wf/see_flow_node_binding.dpl">flowDeployController</prop>
+                  <prop key="/wf/update_flow_node_binding.dpl">flowDeployController</prop>
+                  <prop key="/wf/update_flow_node_param.dpl">flowDeployController</prop>
+                  <prop key="/wf/see_flow_node_performer.dpl">flowDeployController</prop>
+                </props>
+             </property>
+	</bean>
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="flowDeployController" class="org.powerstone.workflow.web.FlowDeployController">
+		<property name="methodNameResolver"><ref local="flowDeployControllerResolver"/></property>
+		<property name="flowDeployManager"><ref bean="flowDeployManager"/></property>
+                <property name="flowMetaManager"><ref bean="flowMetaManager"/></property>
+	</bean>
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="flowDeployControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/wf/remove_flow_deploy.dpl">removeFlowDeploy</prop>
+              <prop key="/wf/enable_flow_deploy.dpl">enableFlowDeploy</prop>
+              <prop key="/wf/disable_flow_deploy.dpl">disableFlowDeploy</prop>
+              <prop key="/wf/see_flow_deploy.dpl">seeFlowDeploy</prop>
+              <prop key="/wf/see_flow_node_binding.dpl">seeFlowNodeBinding</prop>
+              <prop key="/wf/update_flow_node_binding.dpl">updateFlowNodeBinding</prop>
+              <prop key="/wf/update_flow_node_param.dpl">updateFlowNodeParam</prop>
+              <prop key="/wf/see_flow_node_performer.dpl">seeFlowNodePerformer</prop>
+            </props>
+	  </property>
+	</bean>
+        <bean id="flowDeployFormController"
+          class="org.powerstone.workflow.web.FlowDeployFormController">
+                <property name="commandName"><value>flowDeploy</value></property>
+  		<property name="commandClass"><value>org.powerstone.workflow.model.FlowDeploy</value></property>
+		<property name="formView" value="flowDeployForm"/>
+		<property name="successView" value="redirect:/wf/see_flow_meta.fm"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="flowDeployManager"><ref bean="flowDeployManager"/></property>
+                <property name="flowMetaManager"><ref bean="flowMetaManager"/></property>
+	</bean>
+        <bean id="beanValidator" class="org.springmodules.commons.validator.DefaultBeanValidator">
+               <property name="validatorFactory" ref="validatorFactory"/>
+        </bean>
+</beans>

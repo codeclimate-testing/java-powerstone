@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop
+					key="org.springframework.dao.DataAccessException">
+					error
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- View Resolver for JSPs -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass">
+			<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<property name="prefix">
+			<value>/jsps/springmvc/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/user_query.html">userPagingController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="userPagingController"
+		class="org.powerstone.sample.UserPagingController">
+		<property name="userDAO">
+			<bean class="org.powerstone.sample.UserDAO"/>
+		</property>
+		<property name="defaultPageSize">
+			<value>5</value>
+		</property>
+	</bean>
+</beans>

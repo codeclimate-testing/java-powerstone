@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+        <bean id="exceptionResolver"
+           class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+           <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">
+                    dataAccessFailure
+                </prop>
+            </props>
+           </property>
+        </bean>
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages"/>
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/role_manage/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+             <property name="mappings">
+                <props>
+                  <prop key="/role_manage/success_submit.role">roleManageController</prop>
+                  <prop key="/role_manage/list_roles.role">roleManageController</prop>
+                  <prop key="/role_manage/list_roles_tree.role">roleManageController</prop>
+                  <prop key="/role_manage/list_role_members.role">roleManageController</prop>
+                  <prop key="/role_manage/edit_role.role">roleFormController</prop>
+                  <prop key="/role_manage/remove_role.role">roleManageController</prop>
+                  <prop key="/role_manage/add_role_members.role">roleManageController</prop>
+                  <prop key="/role_manage/groups_tree_to_add_role.role">roleManageController</prop>
+                  <prop key="/role_manage/group_members_to_add_role.role">roleManageController</prop>
+                  <prop key="/role_manage/add_users_to_role.role">roleManageController</prop>
+                  <prop key="/role_manage/remove_role_members.role">roleManageController</prop>
+                </props>
+             </property>
+	</bean>
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="roleManageController" class="org.powerstone.ca.web.RoleManageController">
+		<property name="methodNameResolver"><ref local="roleManageControllerResolver"/></property>
+                <property name="roleManager"><ref bean="roleManager"/></property>
+                <property name="groupManager"><ref bean="groupManager"/></property>
+                <property name="userManager"><ref bean="userManager"/></property>
+	</bean>
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="roleManageControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/role_manage/success_submit.role">successSubmit</prop>
+              <prop key="/role_manage/list_roles.role">listRoles</prop>
+              <prop key="/role_manage/list_roles_tree.role">listRolesTree</prop>
+              <prop key="/role_manage/list_role_members.role">listRoleMembers</prop>
+              <prop key="/role_manage/remove_role.role">removeRole</prop>
+              <prop key="/role_manage/add_role_members.role">addRoleMembers</prop>
+              <prop key="/role_manage/groups_tree_to_add_role.role">groupsTreeToAddRole</prop>
+              <prop key="/role_manage/group_members_to_add_role.role">groupMembersToAddRole</prop>
+              <prop key="/role_manage/add_users_to_role.role">addUsersToRole</prop>
+              <prop key="/role_manage/remove_role_members.role">removeRoleMembers</prop>
+            </props>
+	  </property>
+	</bean>
+	<bean id="roleFormController" class="org.powerstone.ca.web.RoleFormController">
+                <property name="commandName"><value>role</value></property>
+  		<property name="commandClass"><value>org.powerstone.ca.model.Role</value></property>
+		<property name="formView" value="roleForm"/>
+		<property name="successView" value="redirect:/role_manage/success_submit.role"/>
+                <property name="validator" ref="beanValidator"/>
+		<property name="roleManager"><ref bean="roleManager"/></property>
+	</bean>
+        <bean id="beanValidator" class="org.springmodules.commons.validator.DefaultBeanValidator">
+               <property name="validatorFactory" ref="validatorFactory"/>
+        </bean>
+</beans>

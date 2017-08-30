@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+    "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+	<global-forwards>
+		<forward name="users" path="/user_query.do" redirect="true" />
+	</global-forwards>
+	
+	<action-mappings>
+		<action path="/user_query"
+			type="org.springframework.web.struts.DelegatingActionProxy">
+			<forward name="list" path="/jsps/struts/usersList.jsp" />
+		</action>
+	</action-mappings>
+
+	<message-resources parameter="messages" />
+
+	<plug-in
+		className="org.springframework.web.struts.ContextLoaderPlugIn">
+		<set-property property="contextConfigLocation"
+			value="/WEB-INF/action-servlet.xml" />
+	</plug-in>
+</struts-config>

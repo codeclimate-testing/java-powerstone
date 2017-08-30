@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.powerstone.ca.model.Role"
+        table="CA_ROLE"
+    >
+
+        <id
+            name="roleID"
+            column="PK_ID"
+            type="java.lang.Long"
+            unsaved-value="-1"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-Role.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="roleName"
+            type="string"
+            column="VC_ROLE_NAME"
+            length="255"
+            not-null="true"
+        />
+
+        <property
+            name="memo"
+            type="string"
+            column="VC_ROLE_MEMO"
+            length="255"
+        />
+
+        <bag
+            name="users"
+            table="CA_JOIN_USER_ROLE"
+            lazy="true"
+            cascade="save-update"
+        >
+
+              <key
+                  column="FK_ROLE_ID"
+              >
+              </key>
+
+              <many-to-many
+                  class="org.powerstone.ca.model.User"
+                  column="FK_USER_ID"
+                  outer-join="auto"
+               />
+
+        </bag>
+
+        <bag
+            name="rights"
+            lazy="true"
+            cascade="all-delete-orphan"
+        >
+
+              <key
+                  column="FK_ROLE_ID"
+              >
+              </key>
+
+              <one-to-many
+                  class="org.powerstone.ca.model.RoleRight"
+              />
+
+        </bag>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Role.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+        <query name="AllRoles"><![CDATA[
+            select r from Role as r order by r.roleID
+        ]]></query>
+        <query name="RoleMembersByPage"><![CDATA[
+            select r.users from Role as r where r.roleID = ?
+        ]]></query>
+        <query name="RoleRightsByCombineKeys"><![CDATA[
+            select rr from RoleRight as rr where rr.role.roleID = ? and rr.resource.id = ? and rr.privilege = ?
+        ]]></query>
+        <query name="RolesOfResource"><![CDATA[
+            select r from Role as r left join r.rights as rr where rr.resource.id = ?
+        ]]></query>
+
+</hibernate-mapping>

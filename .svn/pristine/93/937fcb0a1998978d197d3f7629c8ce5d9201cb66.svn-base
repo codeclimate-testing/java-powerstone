@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix"><value>/WEB-INF/views/flow_monitor/</value></property>
+		<property name="suffix"><value>.jsp</value></property>
+	</bean>
+	<!-- HandlerMapping that dispatches all request to the MultiActionController below -->
+	<bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+          <property name="defaultHandler"><ref local="flowMonitorController"/></property>
+	</bean>
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="flowMonitorController" class="org.powerstone.workflow.web.FlowMonitorController">
+		<property name="methodNameResolver"><ref local="flowMonitorControllerResolver"/></property>
+		<property name="flowProcManager"><ref bean="flowProcManager"/></property>
+                <property name="flowTaskManager"><ref bean="flowTaskManager"/></property>
+	</bean>
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="flowMonitorControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+          <property name="mappings">
+            <props>
+              <prop key="/wf/flow_monitor.moni">flowMonitor</prop>
+              <prop key="/wf/flow_detail.moni">flowDetail</prop>
+              <prop key="/wf/remove_flow_deploy.moni">removeFlowDeploy</prop>
+              <prop key="/wf/enable_flow_deploy.moni">enableFlowDeploy</prop>
+              <prop key="/wf/disable_flow_deploy.moni">disableFlowDeploy</prop>
+            </props>
+	  </property>
+	</bean>
+</beans>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+    <bean id="userDAO" class="org.powerstone.ca.dao.hibernate.UserDAOImpl">
+           <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="groupDAO" class="org.powerstone.ca.dao.hibernate.GroupDAOImpl">
+           <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="roleDAO" class="org.powerstone.ca.dao.hibernate.RoleDAOImpl">
+           <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="resourceDAO" class="org.powerstone.ca.dao.hibernate.ResourceDAOImpl">
+           <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+    <bean id="authenticateDAO" class="org.powerstone.ca.dao.hibernate.AuthenticateDAOImpl">
+           <property name="sessionFactory"><ref bean="ps_sessionFactory"/></property>
+    </bean>
+
+    <!--service-->
+    <bean id="userManager" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.ca.service.impl.UserManagerImpl">
+            <property name="userDAO"><ref local="userDAO"/></property>
+            <property name="resourceManager"><ref local="resourceManager"/></property>
+          </bean>
+        </property>
+    </bean>
+    <bean id="groupManager" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.ca.service.impl.GroupManagerImpl">
+            <property name="groupDAO"><ref local="groupDAO"/></property>
+            <property name="userManager"><ref local="userManager"/></property>
+          </bean>
+        </property>
+    </bean>
+    <bean id="roleManager" parent="baseTransactionProxy">
+        <property name="target">
+           <bean class="org.powerstone.ca.service.impl.RoleManagerImpl">
+            <property name="roleDAO"><ref local="roleDAO"/></property>
+            <property name="userManager"><ref local="userManager"/></property>
+            <property name="resourceManager"><ref local="resourceManager"/></property>
+          </bean>
+        </property>
+    </bean>
+    <bean id="resourceManager" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.ca.service.impl.ResourceManagerImpl">
+            <property name="resourceDAO"><ref local="resourceDAO"/></property>
+          </bean>
+        </property>
+    </bean>
+    <bean id="authenticateManager" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.ca.service.impl.AuthenticateManagerImpl">
+            <property name="authenticateDAO"><ref local="authenticateDAO"/></property>
+            <property name="userManager"><ref local="userManager"/></property>
+          </bean>
+        </property>
+    </bean>
+    <bean id="caDelegater" parent="baseTransactionProxy">
+        <property name="target">
+          <bean class="org.powerstone.ca.service.impl.CADelegaterImpl">
+            <property name="userManager"><ref local="userManager"/></property>
+            <property name="groupManager"><ref local="groupManager"/></property>
+            <property name="roleManager"><ref local="roleManager"/></property>
+            <property name="authenticate"><ref local="authenticateManager"/></property>
+          </bean>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--*********************************************************************************
+	FILE:
+	tag library for GCC SGEP project
+	
+	Copyright(C)2003 Shanghai E&P International,Inc.
+	
+	*********************************************************************************-->
+
+<!-- $Id: eframework.tld,v 1.1.1.1 2006/01/04 09:16:00 waynewang Exp $ -->
+
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>ema-page</shortname>
+	<uri>http://www.e-ma.net/ema-page/ema-page.tld</uri>
+
+	<tag>
+		<name>pagebar</name>
+		<tagclass>org.appfuse.web.util.PagingTag</tagclass>
+		<attribute>
+			<name>url</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>width</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>bordercolor</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>bgcolor</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>styleClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>currPageNo</name>
+		<tagclass>org.appfuse.web.util.CurrentPageNoTag</tagclass>
+	</tag>
+</taglib>

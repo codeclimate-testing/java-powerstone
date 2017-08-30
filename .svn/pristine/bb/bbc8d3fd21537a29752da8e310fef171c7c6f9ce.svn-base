@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.powerstone.ca.model.UserToken"
+        table="CA_USER_TOKEN"
+    >
+
+        <id
+            name="logID"
+            column="PK_LOG_ID"
+            type="java.lang.Long"
+            unsaved-value="-1"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-UserToken.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="token"
+            type="string"
+            column="VC_TOKEN"
+            length="50"
+            not-null="true"
+        />
+
+        <property
+            name="userID"
+            type="long"
+            column="VC_USER_ID"
+            not-null="true"
+        />
+
+        <property
+            name="ipAddress"
+            type="string"
+            column="VC_IP_ADDRESS"
+            length="50"
+            not-null="true"
+        />
+
+        <property
+            name="logOnTime"
+            type="string"
+            column="VC_LOG_ON_TIME"
+            length="50"
+            not-null="true"
+        />
+
+        <property
+            name="lastAccessTime"
+            type="string"
+            column="VC_LAST_ACCESS_TIME"
+            length="50"
+            not-null="true"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-UserToken.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+        <query name="ByTokenAndIp"><![CDATA[
+            select ut from UserToken as ut where ut.token = ? and ut.ipAddress = ?
+        ]]></query>
+        <query name="DataOverdue"><![CDATA[
+            select ut from UserToken as ut where ut.lastAccessTime < ?
+        ]]></query>
+        <query name="UserData"><![CDATA[
+            select ut from UserToken as ut where ut.userID = ? and ut.ipAddress = ?
+        ]]></query>
+
+</hibernate-mapping>

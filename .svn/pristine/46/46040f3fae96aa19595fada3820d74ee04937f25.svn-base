@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.powerstone.ca.model.Group"
+        table="CA_GROUP"
+    >
+
+        <id
+            name="groupID"
+            column="PK_ID"
+            type="java.lang.Long"
+            unsaved-value="-1"
+        >
+            <generator class="native">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-Group.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="groupName"
+            type="string"
+            column="VC_GROUP_NAME"
+            length="255"
+            not-null="true"
+        />
+
+        <property
+            name="memo"
+            type="string"
+            column="VC_GROUP_MEMO"
+            length="255"
+        />
+
+        <many-to-one
+            name="parentGroup"
+            class="org.powerstone.ca.model.Group"
+            cascade="none"
+            outer-join="auto"
+            column="FK_PARENT_GROUP_ID"
+        />
+
+        <bag
+            name="users"
+            table="CA_JOIN_USER_GROUP"
+            lazy="true"
+            cascade="save-update"
+        >
+
+              <key
+                  column="FK_GROUP_ID"
+              >
+              </key>
+
+              <many-to-many
+                  class="org.powerstone.ca.model.User"
+                  column="FK_USER_ID"
+                  outer-join="auto"
+               />
+
+        </bag>
+
+        <bag
+            name="rights"
+            lazy="true"
+            cascade="all-delete-orphan"
+        >
+
+              <key
+                  column="FK_GROUP_ID"
+              >
+              </key>
+
+              <one-to-many
+                  class="org.powerstone.ca.model.GroupRight"
+              />
+
+        </bag>
+
+        <bag
+            name="childGroups"
+            lazy="true"
+            cascade="all"
+        >
+
+              <key
+                  column="FK_PARENT_GROUP_ID"
+              >
+              </key>
+
+              <one-to-many
+                  class="org.powerstone.ca.model.Group"
+              />
+
+        </bag>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Group.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+        <query name="AllGroups"><![CDATA[
+            select g from Group as g order by g.groupID
+        ]]></query>
+        <query name="GroupMembersByPage"><![CDATA[
+            select user from User as user left join user.groups as groups where groups.groupID = ?
+        ]]></query>
+        <query name="GroupRightsByCombineKeys"><![CDATA[
+            select gr from GroupRight as gr where gr.group.groupID = ? and gr.resource.id = ? and gr.privilege = ?
+        ]]></query>
+        <query name="GroupsOfResource"><![CDATA[
+            select g from Group as g left join g.rights as gr where gr.resource.id = ?
+        ]]></query>
+
+</hibernate-mapping>

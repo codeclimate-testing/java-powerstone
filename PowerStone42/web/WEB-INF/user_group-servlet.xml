@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+<beans>
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop
+					key="org.springframework.dao.DataAccessException">
+					dataAccessFailure
+				</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages" />
+	</bean>
+	<!-- Simple ViewResolver for JSP, prepending "/WEB-INF/views" and appending ".jsp" to logical view names -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/views/user_group/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/user_group/success_submit.ca">
+					userGroupController
+				</prop>
+				<prop key="/user_group/list_groups.ca">
+					userGroupController
+				</prop>
+				<prop key="/user_group/list_groups_tree.ca">
+					userGroupController
+				</prop>
+				<prop key="/user_group/list_group_members.ca">
+					userGroupController
+				</prop>
+				<prop key="/user_group/list_users_no_group.ca">
+					userGroupController
+				</prop>
+				<prop key="/user_group/edit_group.ca">
+					groupFormController
+				</prop>
+				<prop key="/user_group/remove_group.ca">
+					userGroupController
+				</prop>
+				<!--prop key="/user_group/add_group_members.ca">userGroupController</prop>
+					<prop key="/user_group/group_tree_to_add_member.ca">userGroupController</prop>
+					<prop key="/user_group/list_users_to_add_member.ca">userGroupController</prop-->
+				<prop key="/user_group/add_users_to_group.ca">
+					userGroupController
+				</prop>
+				<prop key="/user_group/edit_user.ca">
+					userFormController
+				</prop>
+				<prop key="/edit_my_info.ca">myInfoFormController</prop>
+				<prop key="/user_group/remove_group_members.ca">
+					userGroupController
+				</prop>
+				<prop key="/user_group/change_pass.ca">
+					passFormController
+				</prop>
+				<prop key="/change_my_pass.ca">
+					myPassFormController
+				</prop>
+				<prop key="/user_group/login.ca">
+					userGroupController
+				</prop>
+				<prop key="/logout.ca">userGroupController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- MultiActionController that defines user interface actions as separate methods -->
+	<bean id="userGroupController"
+		class="org.powerstone.ca.web.UserGroupController">
+		<property name="methodNameResolver">
+			<ref local="userGroupControllerResolver" />
+		</property>
+		<property name="groupManager">
+			<ref bean="groupManager" />
+		</property>
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+		<property name="authenticate">
+			<ref bean="authenticateManager" />
+		</property>
+		<property name="pageSize">
+			<value>20</value>
+		</property>
+	</bean>
+
+	<!-- Method resolution strategy for the MultiActionController above -->
+	<bean id="userGroupControllerResolver"
+		class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+		<property name="mappings">
+			<props>
+				<prop key="/user_group/success_submit.ca">
+					successSubmit
+				</prop>
+				<prop key="/user_group/list_groups.ca">listGroups</prop>
+				<prop key="/user_group/list_groups_tree.ca">
+					listGroupsTree
+				</prop>
+				<prop key="/user_group/list_group_members.ca">
+					listGroupMembers
+				</prop>
+				<prop key="/user_group/list_users_no_group.ca">
+					listUsersNoGroup
+				</prop>
+				<prop key="/user_group/remove_group.ca">
+					removeGroup
+				</prop>
+				<prop key="/user_group/add_group_members.ca">
+					addGroupMembers
+				</prop>
+				<prop key="/user_group/group_tree_to_add_member.ca">
+					groupTreeToAddMember
+				</prop>
+				<prop key="/user_group/list_users_to_add_member.ca">
+					listUsersToAddMember
+				</prop>
+				<prop key="/user_group/add_users_to_group.ca">
+					addUsersToGroup
+				</prop>
+				<prop key="/user_group/remove_group_members.ca">
+					removeGroupMembers
+				</prop>
+				<prop key="/user_group/login.ca">login</prop>
+				<prop key="/logout.ca">logout</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="groupFormController"
+		class="org.powerstone.ca.web.GroupFormController">
+		<property name="commandName">
+			<value>group</value>
+		</property>
+		<property name="commandClass">
+			<value>org.powerstone.ca.model.Group</value>
+		</property>
+		<property name="formView" value="groupForm" />
+		<property name="successView"
+			value="redirect:/user_group/success_submit.ca" />
+		<property name="validator" ref="beanValidator" />
+		<property name="groupManager">
+			<ref bean="groupManager" />
+		</property>
+	</bean>
+	<bean id="userFormValidator"
+		class="org.powerstone.ca.web.UserFormValidator">
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+	</bean>
+	<bean id="userFormController"
+		class="org.powerstone.ca.web.UserFormController">
+		<property name="commandName">
+			<value>user</value>
+		</property>
+		<property name="commandClass">
+			<value>org.powerstone.ca.model.User</value>
+		</property>
+		<property name="validators">
+			<list>
+				<ref bean="beanValidator" />
+				<ref bean="userFormValidator" />
+			</list>
+		</property>
+		<property name="formView" value="userForm" />
+		<property name="successView"
+			value="redirect:/user_group/list_group_members.ca" />
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+		<property name="groupManager">
+			<ref bean="groupManager" />
+		</property>
+	</bean>
+	<bean id="myInfoFormController"
+		class="org.powerstone.ca.web.MyInfoFormController">
+		<property name="commandName">
+			<value>user</value>
+		</property>
+		<property name="commandClass">
+			<value>org.powerstone.ca.model.User</value>
+		</property>
+		<property name="formView" value="myInfoForm" />
+		<property name="validator" ref="beanValidator" />
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+		<property name="caDelegater">
+			<ref bean="caDelegater" />
+		</property>
+	</bean>
+	<bean id="passFormController"
+		class="org.powerstone.ca.web.PassFormController">
+		<property name="commandName">
+			<value>pass</value>
+		</property>
+		<property name="commandClass">
+			<value>org.powerstone.ca.model.User</value>
+		</property>
+		<property name="formView" value="passForm" />
+		<property name="successView"
+			value="redirect:/user_group/edit_user.ca" />
+		<property name="validator" ref="beanValidator" />
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+	</bean>
+	<bean id="myPassFormController"
+		class="org.powerstone.ca.web.MyPassFormController">
+		<property name="commandName">
+			<value>pass</value>
+		</property>
+		<property name="commandClass">
+			<value>org.powerstone.ca.model.User</value>
+		</property>
+		<property name="formView" value="myPassForm" />
+		<property name="successView" value="redirect:/edit_my_info.ca" />
+		<property name="validator" ref="beanValidator" />
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+		<property name="caDelegater">
+			<ref bean="caDelegater" />
+		</property>
+	</bean>
+	<bean id="beanValidator"
+		class="org.springmodules.commons.validator.DefaultBeanValidator">
+		<property name="validatorFactory" ref="validatorFactory" />
+	</bean>
+</beans>
