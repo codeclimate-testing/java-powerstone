@@ -4,7 +4,7 @@ engines:
     channel: java
   duplication:
     enabled: true
-    channel: java
+    channel: cronopio
     config:
       languages:
         - java
