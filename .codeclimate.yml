@@ -1,0 +1,10 @@
+engines:
+  duplication:
+    channel: cronopio
+    config:
+      languages:
+      - java
+     checks:
+      Similar code:
+        enabled: false
+        
