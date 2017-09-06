@@ -5,7 +5,7 @@ engines:
     config:
       languages:
         - java
-     checks:
-      "Similar code":
+    checks:
+      Similar code:
         enabled: false
         
