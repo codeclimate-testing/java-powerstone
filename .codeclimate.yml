@@ -6,6 +6,6 @@ engines:
       languages:
         - java
      checks:
-      Similar code:
+      "Similar code":
         enabled: false
         
