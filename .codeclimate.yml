@@ -4,7 +4,7 @@ engines:
     enabled: true
     config:
       languages:
-      - java
+        - java
      checks:
       Similar code:
         enabled: false
