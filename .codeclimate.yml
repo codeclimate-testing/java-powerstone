@@ -1,11 +1,16 @@
 engines:
+  structure:
+    enabled: false
   duplication:
-    channel: cronopio
+    enabled: false
+  sonar-java:
     enabled: true
-    config:
-      languages:
-        - java
-    checks:
-      Similar code:
-        enabled: false
-        
+    channel: beta
+ratings:
+  paths:
+    - "**.java"
+exclude_paths:
+  - "**.js"
+  - "**.jsx"
+  - "**.rb"
+  - "**.py"
