@@ -7,7 +7,7 @@ engines:
     enabled: true
     channel: beta
     config:
-      charset: iso-8859-1
+      sonar.sourceEncoding: iso-8859-1
 ratings:
   paths:
     - "**.java"
